@@ -1,4 +1,4 @@
-package entity;
+package com.database.petshop.entity;
 
 import jakarta.persistence.*;
 import java.io.Serializable;

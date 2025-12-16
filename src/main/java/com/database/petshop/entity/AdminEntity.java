@@ -1,4 +1,4 @@
-package entity;
+package com.database.petshop.entity;
 
 import java.io.Serializable;
 import java.util.List;

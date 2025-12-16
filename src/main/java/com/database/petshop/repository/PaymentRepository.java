@@ -1,6 +1,6 @@
-package repository;
+package com.database.petshop.repository;
 
-import entity.PaymentEntity;
+import com.database.petshop.entity.PaymentEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

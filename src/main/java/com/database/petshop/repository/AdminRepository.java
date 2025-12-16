@@ -1,6 +1,6 @@
-package repository;
+package com.database.petshop.repository;
 
-import entity.AdminEntity;
+import com.database.petshop.entity.AdminEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

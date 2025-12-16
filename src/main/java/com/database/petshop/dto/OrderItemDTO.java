@@ -1,4 +1,4 @@
-package dto;
+package com.database.petshop.dto;
 
 public class OrderItemDTO {
     private Long productId;

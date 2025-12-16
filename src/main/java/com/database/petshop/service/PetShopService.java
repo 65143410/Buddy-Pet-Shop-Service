@@ -1,13 +1,13 @@
-package service;
+package com.database.petshop.service;
 
-import entity.CustomerEntity;
-import entity.OrderDetailEntity;
-import entity.OrderEntity;
-import entity.ProductEntity;
-import repository.CustomerRepository;
-import repository.OrderDetailRepository;
-import repository.OrderRepository;
-import repository.ProductRepository;
+import com.database.petshop.entity.CustomerEntity;
+import com.database.petshop.entity.OrderDetailEntity;
+import com.database.petshop.entity.OrderEntity;
+import com.database.petshop.entity.ProductEntity;
+import com.database.petshop.repository.CustomerRepository;
+import com.database.petshop.repository.OrderDetailRepository;
+import com.database.petshop.repository.OrderRepository;
+import com.database.petshop.repository.ProductRepository;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional; 

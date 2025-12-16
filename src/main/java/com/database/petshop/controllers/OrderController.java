@@ -1,4 +1,4 @@
-package controllers;
+package com.database.petshop.controllers;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import dto.OrderItemDTO;
-import dto.OrderRequestDTO;
-import entity.OrderEntity;
-import service.PetShopService;
+import com.database.petshop.dto.OrderItemDTO;
+import com.database.petshop.dto.OrderRequestDTO;
+import com.database.petshop.entity.OrderEntity;
+import com.database.petshop.service.PetShopService;
 
 @RestController
 @RequestMapping("/api/orders")

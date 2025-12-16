@@ -1,4 +1,4 @@
-package dto;
+package com.database.petshop.dto;
 
 import java.util.List;
 public class OrderRequestDTO {
