@@ -35,4 +35,46 @@ public class CancelOrderEntity implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "Staff_ID")
     private StaffEntity staff;
+
+    public Long getCancelId() {
+        return cancelId;
+    }
+
+    public void setCancelId(Long cancelId) {
+        this.cancelId = cancelId;
+    }
+
+    public LocalDateTime getCancelDate() {
+        return cancelDate;
+    }
+
+    public void setCancelDate(LocalDateTime cancelDate) {
+        this.cancelDate = cancelDate;
+    }
+
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
+
+    public OrderEntity getOrder() {
+        return order;
+    }
+
+    public void setOrder(OrderEntity order) {
+        this.order = order;
+    }
+
+    public StaffEntity getStaff() {
+        return staff;
+    }
+
+    public void setStaff(StaffEntity staff) {
+        this.staff = staff;
+    }
+
+    
 }
