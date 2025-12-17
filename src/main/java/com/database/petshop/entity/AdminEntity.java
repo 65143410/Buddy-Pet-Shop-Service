@@ -3,8 +3,6 @@ package com.database.petshop.entity;
 import java.io.Serializable;
 import java.util.List;
 
-import org.springframework.data.mapping.PersistentEntity;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -17,6 +15,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "Admin")
 public class AdminEntity implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Admin_ID")
@@ -31,6 +30,6 @@ public class AdminEntity implements Serializable {
     @Column(name = "Password", nullable = false)
     private String password;
 
-    @OneToMany(mappedBy = "admin", fetch = FetchType.LAZY)
-    private List<PersistentEntity> products;
+    @OneToMany(mappedBy = "admin") 
+    private List<ProductEntity> products;
 }
