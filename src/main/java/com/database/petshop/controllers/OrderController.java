@@ -1,46 +1,57 @@
 package com.database.petshop.controllers;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.database.petshop.dto.OrderItemDTO;
-import com.database.petshop.dto.OrderRequestDTO;
 import com.database.petshop.entity.OrderEntity;
-import com.database.petshop.service.PetShopService;
+import com.database.petshop.service.OrderService;
 
 @RestController
 @RequestMapping("/api/orders")
 public class OrderController {
-    private final PetShopService petShopService;
 
-    public OrderController(PetShopService petShopService) {
-        this.petShopService = petShopService;
+    @Autowired
+    private OrderService orderService;
+
+    @GetMapping("/all")
+    public ResponseEntity<List<OrderEntity>> getAllOrders() {
+        return ResponseEntity.ok(orderService.findAllOrders());
     }
 
-    @PostMapping 
-    public ResponseEntity<?> createOrder(@RequestBody OrderRequestDTO request) {
+    @GetMapping("/{id}")
+    public ResponseEntity<OrderEntity> getOrderById(@PathVariable Long id) {
+        OrderEntity order = orderService.findOrderById(id);
+        if (order != null) {
+            return ResponseEntity.ok(order);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<?> placeOrder(@RequestBody OrderRequestDTO request) {
         try {
-            List<Long> productIds = request.getItems().stream()
-                                           .map(OrderItemDTO::getProductId)
-                                           .collect(Collectors.toList());
-            List<Integer> quantities = request.getItems().stream()
-                                             .map(OrderItemDTO::getQuantity)
-                                             .collect(Collectors.toList());
-            OrderEntity newOrder = petShopService.createNewOrder(
-                request.getCustomerId(),
-                productIds,
-                quantities
-            );
-            return new ResponseEntity<>(newOrder, HttpStatus.CREATED);
-        } catch (RuntimeException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            OrderEntity order = orderService.createOrder(request.getOrder(), request.getDetails());
+            return ResponseEntity.ok(order);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    class OrderRequestDTO {
+        private OrderEntity order;
+        private List<com.database.petshop.entity.OrderDetailEntity> details;
+        public OrderEntity getOrder() {
+            return order;
+        }
+        public List<com.database.petshop.entity.OrderDetailEntity> getDetails() {
+            return details;
         }
     }
 }
