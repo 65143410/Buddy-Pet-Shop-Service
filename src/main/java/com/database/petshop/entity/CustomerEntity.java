@@ -16,8 +16,9 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "Customer")
 public class CustomerEntity implements Serializable {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) 
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Customer_ID")
     private Long customerId;
 
@@ -32,6 +33,9 @@ public class CustomerEntity implements Serializable {
 
     @Column(name = "Address")
     private String address;
+
+    @Column(name = "Password")
+    private String password;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<OrderEntity> orders;
@@ -83,6 +87,13 @@ public class CustomerEntity implements Serializable {
     public void setOrders(List<OrderEntity> orders) {
         this.orders = orders;
     }
-    
-    
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
 }

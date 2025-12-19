@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.database.petshop.entity.AdminEntity;
 import com.database.petshop.entity.CategoryEntity;
@@ -40,7 +41,8 @@ public class DataInitializer {
             CustomerRepository customerRepo,
             OrderRepository orderRepo,
             OrderDetailRepository orderDetailRepo,
-            PaymentRepository paymentRepo
+            PaymentRepository paymentRepo,
+            PasswordEncoder passwordEncoder
     ) {
         return args -> {
             
@@ -48,13 +50,13 @@ public class DataInitializer {
                 StaffEntity s1 = new StaffEntity();
                 s1.setName("พนักงานใจดี สุขสันต์");
                 s1.setEmail("staff1@petshop.com");
-                s1.setPassword("staffpass1");
+                s1.setPassword(passwordEncoder.encode("staffpass1"));
                 staffRepo.save(s1);
 
                 StaffEntity s2 = new StaffEntity();
                 s2.setName("พนักงานขยัน ทำงานดี");
                 s2.setEmail("staff2@petshop.com");
-                s2.setPassword("staffpass2");
+                s2.setPassword(passwordEncoder.encode("staffpass2"));
                 staffRepo.save(s2);
                 System.out.println(">>> Staff Mockup Created!");
             }
@@ -63,13 +65,13 @@ public class DataInitializer {
                 AdminEntity a1 = new AdminEntity();
                 a1.setName("เอดมินหลัก (สมชาย)");
                 a1.setEmail("admin1@petshop.com");
-                a1.setPassword("123456");
+                a1.setPassword(passwordEncoder.encode("123456"));
                 adminRepo.save(a1);
 
                 AdminEntity a2 = new AdminEntity();
                 a2.setName("เอดมินรอง (สมหญิง)");
                 a2.setEmail("admin2@petshop.com");
-                a2.setPassword("654321");
+                a2.setPassword(passwordEncoder.encode("654321"));
                 adminRepo.save(a2);
                 System.out.println(">>> Admin Mockup Created!");
             }
@@ -88,7 +90,7 @@ public class DataInitializer {
                 CustomerEntity c1 = new CustomerEntity();
                 c1.setCustomerName("คุณสมศักดิ์ รักสัตว์");
                 c1.setEmail("somsak@email.com");
-                c1.setPhone("0812345678");
+                c1.setPassword(passwordEncoder.encode("123456"));
                 c1.setAddress("99/1 ซอยสุขุมวิท กรุงเทพฯ");
                 customerRepo.save(c1);
                 System.out.println(">>> Customer Mockup Created!");
