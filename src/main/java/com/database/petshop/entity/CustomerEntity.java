@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -37,7 +38,7 @@ public class CustomerEntity implements Serializable {
     private String address;
 
     @Column(name = "Password")
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

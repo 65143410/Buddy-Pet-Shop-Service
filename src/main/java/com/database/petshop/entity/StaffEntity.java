@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -30,7 +31,7 @@ public class StaffEntity implements Serializable {
     private String email;
 
     @Column(name = "Password", nullable = false)
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @OneToMany(mappedBy = "staff", fetch = FetchType.LAZY)
