@@ -17,6 +17,7 @@ import com.database.petshop.repository.ProductRepository;
 
 @Service
 public class OrderService {
+
     @Autowired
     private OrderRepository orderRepo;
 
@@ -34,9 +35,17 @@ public class OrderService {
         return orderRepo.findById(id).orElse(null);
     }
 
-    @Transactional 
+    @Transactional
     public OrderEntity createOrder(OrderEntity order, List<OrderDetailEntity> details) {
+
         order.setOrderDate(LocalDate.now());
+
+        if (order.getStatus() == null) {
+            com.database.petshop.entity.StatusEntity defaultStatus = new com.database.petshop.entity.StatusEntity();
+            defaultStatus.setStatusId(1L);
+            order.setStatus(defaultStatus);
+        }
+
         OrderEntity savedOrder = orderRepo.save(order);
 
         BigDecimal totalAmount = BigDecimal.ZERO;
@@ -44,12 +53,13 @@ public class OrderService {
         for (OrderDetailEntity detail : details) {
             ProductEntity product = productRepo.findById(detail.getProduct().getProductId())
                     .orElseThrow(() -> new RuntimeException("ไม่พบสินค้า ID: " + detail.getProduct().getProductId()));
+
             if (product.getStock() < detail.getQuantity()) {
                 throw new RuntimeException("สินค้า " + product.getProductName() + " มีสต็อกไม่พอ");
             }
-
             product.setStock(product.getStock() - detail.getQuantity());
             productRepo.save(product);
+
             detail.setOrder(savedOrder);
             detail.setUnitPrice(product.getPrice());
             orderDetailRepo.save(detail);
