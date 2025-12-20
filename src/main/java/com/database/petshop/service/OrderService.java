@@ -55,21 +55,18 @@ public class OrderService {
         customerRepo.findById(order.getCustomer().getCustomerId())
                 .orElseThrow(() -> new RuntimeException("ไม่พบข้อมูลลูกค้า ID: " + order.getCustomer().getCustomerId()));
 
-        
         if (order.getStaff() != null && order.getStaff().getStaffId() != null) {
             staffRepo.findById(order.getStaff().getStaffId())
                     .orElseThrow(() -> new RuntimeException("ไม่พบข้อมูลพนักงาน ID: " + order.getStaff().getStaffId()));
         }
 
-        
         if (order.getStatus() != null && order.getStatus().getStatusId() != null) {
             statusRepo.findById(order.getStatus().getStatusId())
                     .orElseThrow(() -> new RuntimeException("ไม่พบข้อมูลสถานะ ID: " + order.getStatus().getStatusId()));
         }
 
-        
         order.setOrderDate(LocalDate.now());
-        order.setTotalAmount(BigDecimal.ZERO); 
+        order.setTotalAmount(BigDecimal.ZERO);
 
         if (order.getStatus() == null) {
             com.database.petshop.entity.StatusEntity defaultStatus = new com.database.petshop.entity.StatusEntity();
@@ -84,20 +81,20 @@ public class OrderService {
         for (OrderDetailEntity detail : details) {
             ProductEntity product = productRepo.findById(detail.getProduct().getProductId())
                     .orElseThrow(() -> new RuntimeException("ไม่พบสินค้า ID: " + detail.getProduct().getProductId()));
-            
+
             if (product.getStock() < detail.getQuantity()) {
                 throw new RuntimeException("สินค้า " + product.getProductName() + " มีสต็อกไม่พอ");
             }
-            
+
             product.setStock(product.getStock() - detail.getQuantity());
             productRepo.save(product);
-            
+
             detail.setOrder(savedOrder);
             detail.setProduct(product);
             detail.setUnitPrice(product.getPrice());
 
             orderDetailRepo.save(detail);
-            
+
             BigDecimal itemTotal = product.getPrice().multiply(new BigDecimal(detail.getQuantity()));
             calculatedTotal = calculatedTotal.add(itemTotal);
         }
@@ -105,5 +102,66 @@ public class OrderService {
         savedOrder.setTotalAmount(calculatedTotal);
         return orderRepo.save(savedOrder);
     }
-}
 
+    @Transactional
+    public OrderEntity acceptOrder(Long orderId, Long staffId) {
+
+        OrderEntity order = orderRepo.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("ไม่พบออเดอร์ ID: " + orderId));
+
+        com.database.petshop.entity.StaffEntity staff = staffRepo.findById(staffId)
+                .orElseThrow(() -> new RuntimeException("ไม่พบพนักงาน ID: " + staffId));
+
+        if (order.getStaff() != null) {
+            throw new RuntimeException("ออเดอร์นี้มีพนักงานคนอื่นรับไปแล้ว");
+        }
+
+        order.setStaff(staff);
+
+        com.database.petshop.entity.StatusEntity inProgressStatus = new com.database.petshop.entity.StatusEntity();
+        inProgressStatus.setStatusId(2L);
+        order.setStatus(inProgressStatus);
+
+        return orderRepo.save(order);
+    }
+
+    public List<OrderEntity> findUnassignedOrders() {
+        Long pendingStatusId = 1L;
+        return orderRepo.findByStaffIsNullAndStatusStatusIdOrderByOrderDateAsc(pendingStatusId);
+    }
+
+    @Transactional
+    public OrderEntity completeOrder(Long orderId) {
+        OrderEntity order = orderRepo.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("ไม่พบออเดอร์ ID: " + orderId));
+
+        com.database.petshop.entity.StatusEntity completedStatus = new com.database.petshop.entity.StatusEntity();
+        completedStatus.setStatusId(3L);
+        order.setStatus(completedStatus);
+
+        return orderRepo.save(order);
+    }
+
+    @Transactional
+    public OrderEntity cancelOrder(Long orderId) {
+        OrderEntity order = orderRepo.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("ไม่พบออเดอร์ ID: " + orderId));
+
+        for (OrderDetailEntity detail : order.getOrderDetails()) {
+            ProductEntity product = detail.getProduct();
+            product.setStock(product.getStock() + detail.getQuantity()); // บวกคืนเข้าสต็อก
+            productRepo.save(product);
+        }
+
+        com.database.petshop.entity.StatusEntity cancelledStatus = new com.database.petshop.entity.StatusEntity();
+        cancelledStatus.setStatusId(4L);
+        order.setStatus(cancelledStatus);
+
+        return orderRepo.save(order);
+    }
+
+    public List<OrderEntity> findOrdersByStaff(Long staffId) {
+        Long inProgressStatusId = 2L;
+        return orderRepo.findByStaffStaffIdAndStatusStatusId(staffId, inProgressStatusId);
+    }
+}

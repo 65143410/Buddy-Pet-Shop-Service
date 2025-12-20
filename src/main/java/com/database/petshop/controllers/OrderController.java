@@ -7,8 +7,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.database.petshop.dto.OrderRequestDTO;
@@ -44,4 +46,47 @@ public class OrderController {
         return ResponseEntity.ok(order);
     }
 
+    @PutMapping("/{orderId}/accept")
+    public ResponseEntity<?> acceptOrder(
+            @PathVariable Long orderId,
+            @RequestParam Long staffId) {
+        try {
+            OrderEntity updatedOrder = orderService.acceptOrder(orderId, staffId);
+            return ResponseEntity.ok(updatedOrder);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/unassigned")
+    public ResponseEntity<List<OrderEntity>> getUnassignedOrders() {
+        List<OrderEntity> unassigned = orderService.findUnassignedOrders();
+        return ResponseEntity.ok(unassigned);
+    }
+
+    @PutMapping("/{orderId}/complete")
+    public ResponseEntity<?> completeOrder(@PathVariable Long orderId) {
+        try {
+            OrderEntity updatedOrder = orderService.completeOrder(orderId);
+            return ResponseEntity.ok(updatedOrder);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/{orderId}/cancel")
+    public ResponseEntity<?> cancelOrder(@PathVariable Long orderId) {
+        try {
+            OrderEntity updatedOrder = orderService.cancelOrder(orderId);
+            return ResponseEntity.ok(updatedOrder);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/staff/{staffId}/my-tasks")
+    public ResponseEntity<List<OrderEntity>> getMyTasks(@PathVariable Long staffId) {
+        List<OrderEntity> myTasks = orderService.findOrdersByStaff(staffId);
+        return ResponseEntity.ok(myTasks);
+    }
 }
