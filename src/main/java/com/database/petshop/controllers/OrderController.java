@@ -37,24 +37,32 @@ public class OrderController {
 
     @PostMapping("/create")
     public ResponseEntity<?> placeOrder(@RequestBody OrderRequestDTO request) {
-        try {
-            OrderEntity order = orderService.createOrder(request.getOrder(), request.getDetails());
-            return ResponseEntity.ok(order);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        OrderEntity order = orderService.createOrder(request.getOrder(), request.getDetails());
+        return ResponseEntity.ok(order);
     }
+
     public static class OrderRequestDTO {
+
         private OrderEntity order;
         private List<com.database.petshop.entity.OrderDetailEntity> details;
-        public OrderRequestDTO() {}
+
+        public OrderRequestDTO() {
+        }
+
         public OrderEntity getOrder() {
             return order;
         }
-        public void setOrder(OrderEntity order) { this.order = order; }
+
+        public void setOrder(OrderEntity order) {
+            this.order = order;
+        }
+
         public List<com.database.petshop.entity.OrderDetailEntity> getDetails() {
             return details;
         }
-        public void setDetails(List<com.database.petshop.entity.OrderDetailEntity> details) { this.details = details; }
+
+        public void setDetails(List<com.database.petshop.entity.OrderDetailEntity> details) {
+            this.details = details;
+        }
     }
 }
