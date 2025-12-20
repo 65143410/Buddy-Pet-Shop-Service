@@ -2,7 +2,9 @@ package com.database.petshop.service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -164,4 +166,16 @@ public class OrderService {
         Long inProgressStatusId = 2L;
         return orderRepo.findByStaffStaffIdAndStatusStatusId(staffId, inProgressStatusId);
     }
+
+    public Map<String, Object> getDailySalesReport(LocalDate date) {
+    BigDecimal totalSales = orderRepo.sumTotalSalesByDate(date, date);
+    Long orderCount = orderRepo.countCompletedOrdersByDate(date, date);
+
+    Map<String, Object> report = new HashMap<>();
+    report.put("reportDate", date);
+    report.put("totalRevenue", totalSales != null ? totalSales : BigDecimal.ZERO);
+    report.put("orderCount", orderCount);
+    
+    return report;
+}
 }

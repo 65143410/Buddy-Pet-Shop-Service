@@ -1,6 +1,8 @@
 package com.database.petshop.controllers;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -42,8 +44,12 @@ public class OrderController {
 
     @PostMapping("/create")
     public ResponseEntity<?> createOrder(@Valid @RequestBody OrderRequestDTO request) {
-        OrderEntity order = orderService.createOrder(request.getOrder(), request.getDetails());
-        return ResponseEntity.ok(order);
+        try {
+            OrderEntity order = orderService.createOrder(request.getOrder(), request.getDetails());
+            return ResponseEntity.ok(order);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PutMapping("/{orderId}/accept")
@@ -88,5 +94,15 @@ public class OrderController {
     public ResponseEntity<List<OrderEntity>> getMyTasks(@PathVariable Long staffId) {
         List<OrderEntity> myTasks = orderService.findOrdersByStaff(staffId);
         return ResponseEntity.ok(myTasks);
+    }
+
+    @GetMapping("/report/daily")
+    public ResponseEntity<Map<String, Object>> getDailyReport(
+            @RequestParam(required = false) String date) {
+
+        LocalDate reportDate = (date != null) ? LocalDate.parse(date) : LocalDate.now();
+
+        Map<String, Object> report = orderService.getDailySalesReport(reportDate);
+        return ResponseEntity.ok(report);
     }
 }
