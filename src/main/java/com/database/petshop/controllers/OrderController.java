@@ -11,8 +11,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.database.petshop.dto.OrderRequestDTO;
 import com.database.petshop.entity.OrderEntity;
 import com.database.petshop.service.OrderService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/orders")
@@ -36,33 +39,9 @@ public class OrderController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> placeOrder(@RequestBody OrderRequestDTO request) {
+    public ResponseEntity<?> createOrder(@Valid @RequestBody OrderRequestDTO request) {
         OrderEntity order = orderService.createOrder(request.getOrder(), request.getDetails());
         return ResponseEntity.ok(order);
     }
 
-    public static class OrderRequestDTO {
-
-        private OrderEntity order;
-        private List<com.database.petshop.entity.OrderDetailEntity> details;
-
-        public OrderRequestDTO() {
-        }
-
-        public OrderEntity getOrder() {
-            return order;
-        }
-
-        public void setOrder(OrderEntity order) {
-            this.order = order;
-        }
-
-        public List<com.database.petshop.entity.OrderDetailEntity> getDetails() {
-            return details;
-        }
-
-        public void setDetails(List<com.database.petshop.entity.OrderDetailEntity> details) {
-            this.details = details;
-        }
-    }
 }

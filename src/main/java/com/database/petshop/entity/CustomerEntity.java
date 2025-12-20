@@ -15,6 +15,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "Customer")
@@ -26,9 +28,11 @@ public class CustomerEntity implements Serializable {
     private Long customerId;
 
     @Column(name = "Customer_name", nullable = false)
+    @NotBlank(message = "กรุณากรอกชื่อลูกค้า")
     private String customerName;
 
-    @Column(name = "Email", unique = true)
+    @NotBlank(message = "กรุณากรอกอีเมล")
+    @Email(message = "รูปแบบอีเมลไม่ถูกต้อง")
     private String email;
 
     @Column(name = "Phone")

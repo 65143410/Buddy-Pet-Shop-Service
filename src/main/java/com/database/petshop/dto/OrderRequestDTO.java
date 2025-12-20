@@ -1,23 +1,31 @@
 package com.database.petshop.dto;
 
 import java.util.List;
+import jakarta.validation.Valid; 
+import com.database.petshop.entity.OrderEntity;
+import com.database.petshop.entity.OrderDetailEntity;
+
 public class OrderRequestDTO {
-    private Long customerId;
-    private List<OrderItemDTO> items; 
 
-    public Long getCustomerId() {
-        return customerId;
+    @Valid 
+    private OrderEntity order; 
+
+    @Valid 
+    private List<OrderDetailEntity> details; 
+
+    public OrderEntity getOrder() {
+        return order;
     }
 
-    public void setCustomerId(Long customerId) {
-        this.customerId = customerId;
+    public void setOrder(OrderEntity order) {
+        this.order = order;
     }
 
-    public List<OrderItemDTO> getItems() {
-        return items;
+    public List<OrderDetailEntity> getDetails() {
+        return details;
     }
 
-    public void setItems(List<OrderItemDTO> items) {
-        this.items = items;
+    public void setDetails(List<OrderDetailEntity> details) {
+        this.details = details;
     }
 }

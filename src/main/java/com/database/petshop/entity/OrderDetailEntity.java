@@ -13,12 +13,14 @@ import jakarta.persistence.IdClass;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "Order_Detail")
 @IdClass(OrderDetailId.class)
 public class OrderDetailEntity implements Serializable {
+
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "Order_ID")
@@ -30,16 +32,17 @@ public class OrderDetailEntity implements Serializable {
     @JoinColumn(name = "Product_ID")
     private ProductEntity product;
 
-    @Column(name = "Quantity", nullable = false)
+    @Min(value = 1, message = "จำนวนสินค้าต้องมีอย่างน้อย 1 ชิ้น")
+    @Column(name = "Quantity")
     private Integer quantity;
 
-    @Column(name = "Unit_Price", nullable = false) 
+    @Column(name = "Unit_Price", nullable = false)
     private BigDecimal unitPrice;
 
     public OrderEntity getOrder() {
         return order;
     }
-    
+
     public void setOrder(OrderEntity order) {
         this.order = order;
     }
@@ -47,7 +50,7 @@ public class OrderDetailEntity implements Serializable {
     public ProductEntity getProduct() {
         return product;
     }
-    
+
     public void setProduct(ProductEntity product) {
         this.product = product;
     }
@@ -68,4 +71,3 @@ public class OrderDetailEntity implements Serializable {
         this.unitPrice = unitPrice;
     }
 }
-
