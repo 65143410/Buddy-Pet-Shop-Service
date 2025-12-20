@@ -14,10 +14,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.database.petshop.entity.OrderDetailEntity;
 import com.database.petshop.entity.OrderEntity;
+import com.database.petshop.entity.PaymentEntity;
 import com.database.petshop.entity.ProductEntity;
+import com.database.petshop.entity.StaffEntity;
 import com.database.petshop.repository.CustomerRepository;
 import com.database.petshop.repository.OrderDetailRepository;
 import com.database.petshop.repository.OrderRepository;
+import com.database.petshop.repository.PaymentRepository;
 import com.database.petshop.repository.ProductRepository;
 import com.database.petshop.repository.StaffRepository;
 import com.database.petshop.repository.StatusRepository;
@@ -42,6 +45,9 @@ public class OrderService {
 
     @Autowired
     private StatusRepository statusRepo;
+
+    @Autowired
+    private PaymentRepository paymentRepo;
 
     public List<OrderEntity> findAllOrders() {
         return orderRepo.findAll();
@@ -109,22 +115,17 @@ public class OrderService {
 
     @Transactional
     public OrderEntity acceptOrder(Long orderId, Long staffId) {
-
         OrderEntity order = orderRepo.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("ไม่พบออเดอร์ ID: " + orderId));
-
-        com.database.petshop.entity.StaffEntity staff = staffRepo.findById(staffId)
-                .orElseThrow(() -> new RuntimeException("ไม่พบพนักงาน ID: " + staffId));
-
-        if (order.getStaff() != null) {
-            throw new RuntimeException("ออเดอร์นี้มีพนักงานคนอื่นรับไปแล้ว");
+        if (!order.getStatus().getStatusName().equals("ชำระเงินแล้ว")) {
+            throw new RuntimeException("ไม่สามารถรับออเดอร์นี้ได้ เนื่องจากยังไม่ชำระเงินหรือรอตรวจสอบ");
         }
 
-        order.setStaff(staff);
+        StaffEntity staff = staffRepo.findById(staffId)
+                .orElseThrow(() -> new RuntimeException("ไม่พบพนักงาน ID: " + staffId));
 
-        com.database.petshop.entity.StatusEntity inProgressStatus = new com.database.petshop.entity.StatusEntity();
-        inProgressStatus.setStatusId(2L);
-        order.setStatus(inProgressStatus);
+        order.setStaff(staff);
+        order.setStatus(statusRepo.findByStatusName("กำลังจัดเตรียมสินค้า"));
 
         return orderRepo.save(order);
     }
@@ -153,7 +154,7 @@ public class OrderService {
 
         for (OrderDetailEntity detail : order.getOrderDetails()) {
             ProductEntity product = detail.getProduct();
-            product.setStock(product.getStock() + detail.getQuantity()); // บวกคืนเข้าสต็อก
+            product.setStock(product.getStock() + detail.getQuantity());
             productRepo.save(product);
         }
 
@@ -229,5 +230,40 @@ public class OrderService {
         receipt.put("status", order.getStatus().getStatusName());
 
         return receipt;
+    }
+
+    @Transactional
+    public void submitPayment(Long orderId, String slipFileName, BigDecimal amount) {
+        OrderEntity order = orderRepo.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("ไม่พบออเดอร์ ID: " + orderId));
+
+        PaymentEntity payment = new PaymentEntity();
+        payment.setOrder(order);
+        payment.setAmount(amount);
+        payment.setSlipImage(slipFileName);
+        payment.setMethod("โอนเงินผ่านธนาคาร");
+        paymentRepo.save(payment);
+
+        order.setStatus(statusRepo.findByStatusName("รอตรวจสอบยอดเงิน"));
+        orderRepo.save(order);
+    }
+
+    @Transactional
+    public void verifyPayment(Long orderId, boolean isApproved) {
+        OrderEntity order = orderRepo.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("ไม่พบออเดอร์ ID: " + orderId));
+
+        if (isApproved) {
+            order.setStatus(statusRepo.findByStatusName("ชำระเงินแล้ว"));
+        } else {
+
+            for (OrderDetailEntity detail : order.getOrderDetails()) {
+                ProductEntity product = detail.getProduct();
+                product.setStock(product.getStock() + detail.getQuantity());
+                productRepo.save(product);
+            }
+            order.setStatus(statusRepo.findByStatusName("ยกเลิก/สลิปไม่ถูกต้อง"));
+        }
+        orderRepo.save(order);
     }
 }

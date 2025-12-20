@@ -19,7 +19,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "Payment")
 public class PaymentEntity implements Serializable {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Payment_ID")
@@ -32,12 +32,15 @@ public class PaymentEntity implements Serializable {
     private BigDecimal amount;
 
     @Column(name = "Method")
-    private String method; 
+    private String method;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "Order_ID", nullable = false)
     @JsonIgnore
     private OrderEntity order;
+
+    @Column(name = "Slip_Image")
+    private String slipImage;
 
     public Long getPaymentId() {
         return paymentId;
@@ -79,6 +82,11 @@ public class PaymentEntity implements Serializable {
         this.order = order;
     }
 
-    
+    public String getSlipImage() {
+        return slipImage;
+    }
 
+    public void setSlipImage(String slipImage) {
+        this.slipImage = slipImage;
+    }
 }

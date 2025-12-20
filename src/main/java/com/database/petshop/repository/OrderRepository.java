@@ -34,4 +34,7 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Long> {
 
     @Query("SELECT o FROM OrderEntity o WHERE LOWER(o.customer.customerName) LIKE LOWER(CONCAT('%', :customerName, '%')) ORDER BY o.orderDate DESC")
     List<OrderEntity> searchByCustomerName(@Param("customerName") String customerName);
+
+    @Query("SELECT o FROM OrderEntity o WHERE o.status.statusName = 'ชำระเงินแล้ว'")
+    List<OrderEntity> findPaidOrdersForStaff();
 }

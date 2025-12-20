@@ -20,4 +20,6 @@ public interface CategoryRepository extends JpaRepository<CategoryEntity, Long> 
            "GROUP BY c.categoryName " +
            "ORDER BY totalSales DESC")
     List<Map<String, Object>> getSalesByCategoryReport();
+
+    CategoryEntity findByCategoryName(String categoryName);
 }
