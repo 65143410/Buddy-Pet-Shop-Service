@@ -118,4 +118,10 @@ public class OrderController {
         String message = isApproved ? "อนุมัติการชำระเงินเรียบร้อย" : "ปฏิเสธสลิปและคืนสต็อกแล้ว";
         return ResponseEntity.ok(Map.of("message", message));
     }
+
+    @GetMapping("/admin/pending-verification")
+    public ResponseEntity<List<OrderEntity>> getPendingVerificationOrders() {
+        List<OrderEntity> orders = orderService.getPendingVerificationOrders();
+        return ResponseEntity.ok(orders);
+    }
 }

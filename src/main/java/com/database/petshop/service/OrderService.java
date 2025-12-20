@@ -266,4 +266,14 @@ public class OrderService {
         }
         orderRepo.save(order);
     }
+
+    public List<OrderEntity> getPendingVerificationOrders() {
+    String statusName = "รอตรวจสอบยอดเงิน"; 
+    List<OrderEntity> orders = orderRepo.findByStatus_StatusName(statusName);
+    
+    if (orders.isEmpty()) {
+        
+    }
+    return orders;
+}
 }

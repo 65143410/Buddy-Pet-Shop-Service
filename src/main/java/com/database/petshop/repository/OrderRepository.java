@@ -20,6 +20,8 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Long> {
 
     List<OrderEntity> findByCustomer_CustomerNameContainingIgnoreCaseOrderByOrderDateDesc(String customerName);
 
+    List<OrderEntity> findByStatus_StatusName(String statusName);
+
     @Query("SELECT SUM(o.totalAmount) FROM OrderEntity o "
             + "WHERE o.status.statusId = 3 "
             + "AND o.orderDate BETWEEN :startDate AND :endDate")

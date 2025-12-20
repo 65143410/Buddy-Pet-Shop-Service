@@ -32,6 +32,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/orders/{id}/accept", "/api/orders/{id}/complete", "/api/orders/{id}/cancel").hasRole("STAFF")
                 .requestMatchers("/api/orders/unassigned", "/api/orders/staff/**").hasRole("STAFF")
                 .requestMatchers("/api/orders/all", "/api/orders/{id}", "/api/orders/search").hasAnyRole("ADMIN", "STAFF")
+                .requestMatchers("/api/orders/{id}/verify").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults());
