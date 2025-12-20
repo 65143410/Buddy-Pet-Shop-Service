@@ -1,7 +1,10 @@
 package com.database.petshop.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,7 +24,7 @@ public class ProductService {
 
     public ProductEntity findProductById(Long id) {
         Optional<ProductEntity> product = productRepo.findById(id);
-        return product.orElse(null); 
+        return product.orElse(null);
     }
 
     public ProductEntity saveProduct(ProductEntity product) {
@@ -39,7 +42,6 @@ public class ProductService {
             existingProduct.setStock(productDetails.getStock());
             existingProduct.setDescription(productDetails.getDescription());
             existingProduct.setCategory(productDetails.getCategory());
-            
 
             return productRepo.save(existingProduct);
         }
@@ -48,5 +50,18 @@ public class ProductService {
 
     public void deleteProduct(Long id) {
         productRepo.deleteById(id);
+    }
+
+    public List<Map<String, Object>> getLowStockAlert(int threshold) {
+        
+        List<ProductEntity> lowStockProducts = productRepo.findByStockLessThanEqualOrderByStockAsc(threshold);
+        return lowStockProducts.stream().map(product -> {
+            Map<String, Object> map = new HashMap<>();
+            map.put("productId", product.getProductId());
+            map.put("productName", product.getProductName());
+            map.put("currentStock", product.getStock());
+            map.put("status", (product.getStock() == 0) ? "OUT_OF_STOCK" : "LOW_STOCK");
+            return map;
+        }).collect(Collectors.toList());
     }
 }

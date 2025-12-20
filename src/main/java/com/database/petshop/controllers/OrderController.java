@@ -115,4 +115,9 @@ public class OrderController {
     public ResponseEntity<List<OrderEntity>> searchByCustomer(@RequestParam String customerName) {
         return ResponseEntity.ok(orderService.searchOrdersByCustomer(customerName));
     }
+
+    @GetMapping("/{id}/receipt")
+    public ResponseEntity<Map<String, Object>> getOrderReceipt(@PathVariable Long id) {
+        return ResponseEntity.ok(orderService.getReceipt(id));
+    }
 }

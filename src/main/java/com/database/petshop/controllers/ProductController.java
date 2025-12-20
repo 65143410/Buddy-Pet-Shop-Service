@@ -2,6 +2,7 @@ package com.database.petshop.controllers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,16 +14,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.database.petshop.entity.ProductEntity;
 import com.database.petshop.service.ProductService;
 
-
 @RestController
 @RequestMapping("/api/product")
 public class ProductController {
-    
+
     @Autowired
     ProductService productService;
 
@@ -38,6 +39,7 @@ public class ProductController {
 
         return res;
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<ProductEntity> getProductById(@PathVariable Long id) {
         ProductEntity product = productService.findProductById(id);
@@ -46,6 +48,7 @@ public class ProductController {
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
+
     @PostMapping("/add")
     public ResponseEntity<ProductEntity> createProduct(@RequestBody ProductEntity product) {
         try {
@@ -55,6 +58,7 @@ public class ProductController {
             return ResponseEntity.badRequest().build();
         }
     }
+
     @PutMapping("/update/{id}")
     public ResponseEntity<ProductEntity> updateProduct(@PathVariable Long id, @RequestBody ProductEntity productDetails) {
         try {
@@ -64,6 +68,7 @@ public class ProductController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<HttpStatus> deleteProduct(@PathVariable Long id) {
         try {
@@ -74,17 +79,9 @@ public class ProductController {
         }
     }
 
-
-    // @GetMapping("/save-product")
-    // public List<Object> findAllIncomeDeductInfo() {
-    //     List<Object> res = new ArrayList<>();
-    //     try {
-    //         res = incDeductService.findAllIncomeDeductInfo();
-    //     } catch (Exception e) {
-    //         System.out.println("can not find income-deduct info");
-    //         return null;
-    //     }
-
-    //     return res;
-    // }
+    @GetMapping("/low-stock")
+    public ResponseEntity<List<Map<String, Object>>> getLowStockProducts(
+            @RequestParam(defaultValue = "5") int threshold) {
+        return ResponseEntity.ok(productService.getLowStockAlert(threshold));
+    }
 }

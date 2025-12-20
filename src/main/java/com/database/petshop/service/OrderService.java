@@ -192,12 +192,42 @@ public class OrderService {
             map.put("productId", product.getProductId());
             map.put("productName", product.getProductName());
             map.put("totalSold", totalQty);
-            map.put("currentStock", product.getStock()); 
+            map.put("currentStock", product.getStock());
             return map;
         }).collect(Collectors.toList());
     }
 
     public List<OrderEntity> searchOrdersByCustomer(String name) {
-    return orderRepo.searchByCustomerName(name); 
-}
+        return orderRepo.searchByCustomerName(name);
+    }
+
+    public Map<String, Object> getReceipt(Long orderId) {
+        OrderEntity order = orderRepo.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("ไม่พบออเดอร์ ID: " + orderId));
+
+        Map<String, Object> receipt = new HashMap<>();
+        receipt.put("receiptNumber", "REC-" + order.getOrderId());
+        receipt.put("orderDate", order.getOrderDate());
+        receipt.put("customerName", order.getCustomer().getCustomerName());
+        receipt.put("customerPhone", order.getCustomer().getPhone());
+
+        if (order.getStaff() != null) {
+            receipt.put("staffName", order.getStaff().getName());
+        }
+
+        List<Map<String, Object>> items = order.getOrderDetails().stream().map(detail -> {
+            Map<String, Object> item = new HashMap<>();
+            item.put("productName", detail.getProduct().getProductName());
+            item.put("quantity", detail.getQuantity());
+            item.put("unitPrice", detail.getUnitPrice());
+            item.put("subTotal", detail.getUnitPrice().multiply(new BigDecimal(detail.getQuantity())));
+            return item;
+        }).collect(Collectors.toList());
+
+        receipt.put("items", items);
+        receipt.put("totalAmount", order.getTotalAmount());
+        receipt.put("status", order.getStatus().getStatusName());
+
+        return receipt;
+    }
 }
