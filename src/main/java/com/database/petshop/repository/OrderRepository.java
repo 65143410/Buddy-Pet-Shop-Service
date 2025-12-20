@@ -18,6 +18,8 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Long> {
 
     List<OrderEntity> findByStaffStaffIdAndStatusStatusId(Long staffId, Long statusId);
 
+    List<OrderEntity> findByCustomer_CustomerNameContainingIgnoreCaseOrderByOrderDateDesc(String customerName);
+
     @Query("SELECT SUM(o.totalAmount) FROM OrderEntity o "
             + "WHERE o.status.statusId = 3 "
             + "AND o.orderDate BETWEEN :startDate AND :endDate")
@@ -29,4 +31,7 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Long> {
             + "AND o.orderDate BETWEEN :startDate AND :endDate")
     Long countCompletedOrdersByDate(@Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate);
+
+    @Query("SELECT o FROM OrderEntity o WHERE LOWER(o.customer.customerName) LIKE LOWER(CONCAT('%', :customerName, '%')) ORDER BY o.orderDate DESC")
+    List<OrderEntity> searchByCustomerName(@Param("customerName") String customerName);
 }

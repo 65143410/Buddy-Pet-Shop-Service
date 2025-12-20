@@ -105,4 +105,14 @@ public class OrderController {
         Map<String, Object> report = orderService.getDailySalesReport(reportDate);
         return ResponseEntity.ok(report);
     }
+
+    @GetMapping("/report/top-sellers")
+    public ResponseEntity<List<Map<String, Object>>> getTopSellers() {
+        return ResponseEntity.ok(orderService.getTopSellingProducts(5));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<OrderEntity>> searchByCustomer(@RequestParam String customerName) {
+        return ResponseEntity.ok(orderService.searchOrdersByCustomer(customerName));
+    }
 }

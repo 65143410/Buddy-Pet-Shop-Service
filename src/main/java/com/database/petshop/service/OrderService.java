@@ -5,8 +5,10 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -168,14 +170,34 @@ public class OrderService {
     }
 
     public Map<String, Object> getDailySalesReport(LocalDate date) {
-    BigDecimal totalSales = orderRepo.sumTotalSalesByDate(date, date);
-    Long orderCount = orderRepo.countCompletedOrdersByDate(date, date);
+        BigDecimal totalSales = orderRepo.sumTotalSalesByDate(date, date);
+        Long orderCount = orderRepo.countCompletedOrdersByDate(date, date);
 
-    Map<String, Object> report = new HashMap<>();
-    report.put("reportDate", date);
-    report.put("totalRevenue", totalSales != null ? totalSales : BigDecimal.ZERO);
-    report.put("orderCount", orderCount);
-    
-    return report;
+        Map<String, Object> report = new HashMap<>();
+        report.put("reportDate", date);
+        report.put("totalRevenue", totalSales != null ? totalSales : BigDecimal.ZERO);
+        report.put("orderCount", orderCount);
+
+        return report;
+    }
+
+    public List<Map<String, Object>> getTopSellingProducts(int limit) {
+        List<Object[]> results = orderDetailRepo.findTopSellingProducts(PageRequest.of(0, limit));
+
+        return results.stream().map(result -> {
+            ProductEntity product = (ProductEntity) result[0];
+            Long totalQty = (Long) result[1];
+
+            Map<String, Object> map = new HashMap<>();
+            map.put("productId", product.getProductId());
+            map.put("productName", product.getProductName());
+            map.put("totalSold", totalQty);
+            map.put("currentStock", product.getStock()); 
+            return map;
+        }).collect(Collectors.toList());
+    }
+
+    public List<OrderEntity> searchOrdersByCustomer(String name) {
+    return orderRepo.searchByCustomerName(name); 
 }
 }
