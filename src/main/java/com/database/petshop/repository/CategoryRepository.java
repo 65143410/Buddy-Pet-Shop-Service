@@ -1,10 +1,23 @@
 package com.database.petshop.repository;
 
-import com.database.petshop.entity.CategoryEntity;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+
+import com.database.petshop.entity.CategoryEntity;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<CategoryEntity, Long> {
-    
+    @Query("SELECT new map(c.categoryName as categoryName, " +
+           "SUM(od.quantity) as totalUnits, " +
+           "SUM(od.quantity * od.unitPrice) as totalSales) " +
+           "FROM OrderDetailEntity od " +
+           "JOIN od.product p " +
+           "JOIN p.category c " +
+           "GROUP BY c.categoryName " +
+           "ORDER BY totalSales DESC")
+    List<Map<String, Object>> getSalesByCategoryReport();
 }

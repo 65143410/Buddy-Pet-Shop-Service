@@ -1,6 +1,7 @@
 package com.database.petshop.controllers;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,7 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/api/category")
 public class CategoryController {
+
     @Autowired
     private CategoryService categoryService;
 
@@ -46,7 +48,7 @@ public class CategoryController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<CategoryEntity> updateCategory(@PathVariable Long id,@Valid @RequestBody CategoryEntity details) {
+    public ResponseEntity<CategoryEntity> updateCategory(@PathVariable Long id, @Valid @RequestBody CategoryEntity details) {
         CategoryEntity updated = categoryService.updateCategory(id, details);
         return ResponseEntity.ok(updated);
     }
@@ -55,5 +57,10 @@ public class CategoryController {
     public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
         categoryService.deleteCategory(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/report/sales")
+    public ResponseEntity<List<Map<String, Object>>> getSalesReport() {
+        return ResponseEntity.ok(categoryService.getCategorySalesReport());
     }
 }

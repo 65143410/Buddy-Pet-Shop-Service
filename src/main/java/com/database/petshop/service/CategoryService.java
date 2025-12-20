@@ -1,6 +1,7 @@
 package com.database.petshop.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,5 +39,9 @@ public class CategoryService {
 
     public void deleteCategory(Long id) {
         catRepo.deleteById(id);
+    }
+
+    public List<Map<String, Object>> getCategorySalesReport() {
+        return catRepo.getSalesByCategoryReport(); 
     }
 }
