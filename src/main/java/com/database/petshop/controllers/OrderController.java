@@ -36,12 +36,10 @@ public class OrderController {
     @GetMapping("/{id}")
     public ResponseEntity<OrderEntity> getOrderById(@PathVariable Long id) {
         OrderEntity order = orderService.findOrderById(id);
-        if (order != null) {
-            return ResponseEntity.ok(order);
-        }
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(order);
     }
 
+    
     @PostMapping("/create")
     public ResponseEntity<?> createOrder(@Valid @RequestBody OrderRequestDTO request) {
         try {
@@ -56,12 +54,7 @@ public class OrderController {
     public ResponseEntity<?> acceptOrder(
             @PathVariable Long orderId,
             @RequestParam Long staffId) {
-        try {
-            OrderEntity updatedOrder = orderService.acceptOrder(orderId, staffId);
-            return ResponseEntity.ok(updatedOrder);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        return ResponseEntity.ok(orderService.acceptOrder(orderId, staffId));
     }
 
     @GetMapping("/unassigned")
@@ -72,22 +65,12 @@ public class OrderController {
 
     @PutMapping("/{orderId}/complete")
     public ResponseEntity<?> completeOrder(@PathVariable Long orderId) {
-        try {
-            OrderEntity updatedOrder = orderService.completeOrder(orderId);
-            return ResponseEntity.ok(updatedOrder);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        return ResponseEntity.ok(orderService.completeOrder(orderId));
     }
 
     @PutMapping("/{orderId}/cancel")
     public ResponseEntity<?> cancelOrder(@PathVariable Long orderId) {
-        try {
-            OrderEntity updatedOrder = orderService.cancelOrder(orderId);
-            return ResponseEntity.ok(updatedOrder);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        return ResponseEntity.ok(orderService.cancelOrder(orderId));
     }
 
     @GetMapping("/staff/{staffId}/my-tasks")

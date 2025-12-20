@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.database.petshop.entity.CategoryEntity;
 import com.database.petshop.service.CategoryService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/category")
 public class CategoryController {
@@ -25,12 +27,7 @@ public class CategoryController {
 
     @GetMapping("/all")
     public ResponseEntity<List<CategoryEntity>> getAllCategories() {
-        try {
-            List<CategoryEntity> categories = categoryService.findAllCategories();
-            return ResponseEntity.ok(categories);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        return ResponseEntity.ok(categoryService.findAllCategories());
     }
 
     @GetMapping("/{id}")
@@ -43,31 +40,20 @@ public class CategoryController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<CategoryEntity> createCategory(@RequestBody CategoryEntity category) {
-        try {
-            CategoryEntity saved = categoryService.saveCategory(category);
-            return ResponseEntity.status(HttpStatus.CREATED).body(saved);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+    public ResponseEntity<CategoryEntity> createCategory(@Valid @RequestBody CategoryEntity category) {
+        CategoryEntity saved = categoryService.saveCategory(category);
+        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<CategoryEntity> updateCategory(@PathVariable Long id, @RequestBody CategoryEntity details) {
+    public ResponseEntity<CategoryEntity> updateCategory(@PathVariable Long id,@Valid @RequestBody CategoryEntity details) {
         CategoryEntity updated = categoryService.updateCategory(id, details);
-        if (updated != null) {
-            return ResponseEntity.ok(updated);
-        }
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(updated);
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
-        try {
-            categoryService.deleteCategory(id);
-            return ResponseEntity.noContent().build();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        categoryService.deleteCategory(id);
+        return ResponseEntity.noContent().build();
     }
 }

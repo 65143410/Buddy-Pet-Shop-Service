@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.database.petshop.entity.CustomerEntity;
 import com.database.petshop.service.CustomerService;
 
+import jakarta.validation.Valid;
+
 
 @RestController
 @RequestMapping("/api/customer")
@@ -40,17 +42,13 @@ public class CustomerController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<CustomerEntity> createCustomer(@RequestBody CustomerEntity customer) {
-        try {
-            CustomerEntity savedCustomer = customerService.saveCustomer(customer);
-            return ResponseEntity.status(HttpStatus.CREATED).body(savedCustomer);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+    public ResponseEntity<CustomerEntity> createCustomer(@Valid @RequestBody CustomerEntity customer) {
+        CustomerEntity savedCustomer = customerService.saveCustomer(customer);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedCustomer);
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<CustomerEntity> updateCustomer(@PathVariable Long id, @RequestBody CustomerEntity details) {
+    public ResponseEntity<CustomerEntity> updateCustomer(@PathVariable Long id, @Valid @RequestBody CustomerEntity details) {
         CustomerEntity updated = customerService.updateCustomer(id, details);
         if (updated != null) {
             return ResponseEntity.ok(updated);
@@ -60,11 +58,7 @@ public class CustomerController {
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteCustomer(@PathVariable Long id) {
-        try {
-            customerService.deleteCustomer(id);
-            return ResponseEntity.noContent().build();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        customerService.deleteCustomer(id);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -1,6 +1,5 @@
 package com.database.petshop.controllers;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.database.petshop.entity.ProductEntity;
 import com.database.petshop.service.ProductService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/product")
 public class ProductController {
@@ -28,55 +29,32 @@ public class ProductController {
     ProductService productService;
 
     @GetMapping("/get-all-product")
-    public List<ProductEntity> findAllIncomeDeductInfo() {
-        List<ProductEntity> res = new ArrayList<ProductEntity>();
-        try {
-            res = productService.findAllProduct();
-        } catch (Exception e) {
-            System.out.println("can not find product info");
-            return null;
-        }
-
-        return res;
+    public ResponseEntity<List<ProductEntity>> getAllProducts() {
+        return ResponseEntity.ok(productService.findAllProduct());
     }
 
-    @GetMapping("/{id}")
+   @GetMapping("/{id}")
     public ResponseEntity<ProductEntity> getProductById(@PathVariable Long id) {
         ProductEntity product = productService.findProductById(id);
-        if (product != null) {
-            return new ResponseEntity<>(product, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return ResponseEntity.ok(product); 
     }
 
     @PostMapping("/add")
-    public ResponseEntity<ProductEntity> createProduct(@RequestBody ProductEntity product) {
-        try {
-            ProductEntity savedProduct = productService.saveProduct(product);
-            return ResponseEntity.status(HttpStatus.CREATED).body(savedProduct);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+    public ResponseEntity<ProductEntity> createProduct( @Valid @RequestBody ProductEntity product) {
+        ProductEntity savedProduct = productService.saveProduct(product);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedProduct);
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<ProductEntity> updateProduct(@PathVariable Long id, @RequestBody ProductEntity productDetails) {
-        try {
-            ProductEntity updatedProduct = productService.updateProduct(id, productDetails);
-            return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<ProductEntity> updateProduct(@PathVariable Long id, @Valid @RequestBody ProductEntity productDetails) {
+        ProductEntity updatedProduct = productService.updateProduct(id, productDetails);
+        return ResponseEntity.ok(updatedProduct);
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<HttpStatus> deleteProduct(@PathVariable Long id) {
-        try {
-            productService.deleteProduct(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        productService.deleteProduct(id);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/low-stock")

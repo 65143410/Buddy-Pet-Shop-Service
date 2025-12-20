@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.database.petshop.entity.StaffEntity;
 import com.database.petshop.service.StaffService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/staff")
 public class StaffController {
@@ -30,12 +32,12 @@ public class StaffController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<StaffEntity> createStaff(@RequestBody StaffEntity staff) {
+    public ResponseEntity<StaffEntity> createStaff(@Valid @RequestBody StaffEntity staff) {
         return ResponseEntity.status(HttpStatus.CREATED).body(staffService.saveStaff(staff));
     }
 
     @PutMapping("/{id}/status")
-    public ResponseEntity<String> updateStaffStatus(@PathVariable Long id, @RequestParam String newStatus) {
+    public ResponseEntity<String> updateStaffStatus(@PathVariable Long id,@Valid @RequestParam String newStatus) {
         staffService.updateStatus(id, newStatus);
         return ResponseEntity.ok("อัปเดตสถานะพนักงานเป็น " + newStatus + " เรียบร้อยแล้ว");
     }
