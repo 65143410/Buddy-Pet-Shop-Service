@@ -33,6 +33,8 @@ public class SecurityConfig {
                 .requestMatchers("/api/orders/unassigned", "/api/orders/staff/**").hasRole("STAFF")
                 .requestMatchers("/api/orders/all", "/api/orders/{id}", "/api/orders/search").hasAnyRole("ADMIN", "STAFF")
                 .requestMatchers("/api/orders/{id}/verify").hasRole("ADMIN")
+                .requestMatchers("/api/payments/upload-slip/**").hasRole("USER") 
+                .requestMatchers("/uploads/**").permitAll()
                 .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults());

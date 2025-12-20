@@ -1,16 +1,21 @@
 package com.database.petshop.dto;
 
 import java.util.List;
-import jakarta.validation.Valid; 
-import com.database.petshop.entity.OrderEntity;
+
 import com.database.petshop.entity.OrderDetailEntity;
+import com.database.petshop.entity.OrderEntity;
+
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 
 public class OrderRequestDTO {
 
     @Valid 
+    @NotNull(message = "กรุณาระบุข้อมูลออเดอร์") 
     private OrderEntity order; 
 
     @Valid 
+    @NotNull(message = "กรุณาระบุรายละเอียดสินค้า") 
     private List<OrderDetailEntity> details; 
 
     public OrderEntity getOrder() {
