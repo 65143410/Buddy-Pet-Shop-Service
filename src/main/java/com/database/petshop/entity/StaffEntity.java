@@ -3,6 +3,8 @@ package com.database.petshop.entity;
 import java.io.Serializable;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -15,6 +17,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "Staff")
 public class StaffEntity implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Staff_ID")
@@ -27,10 +30,15 @@ public class StaffEntity implements Serializable {
     private String email;
 
     @Column(name = "Password", nullable = false)
-    private String password; 
-    
+    @JsonIgnore
+    private String password;
+
     @OneToMany(mappedBy = "staff", fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<OrderEntity> managedOrders;
+
+    @Column(name = "status")
+    private String status = "ACTIVE";
 
     public Long getStaffId() {
         return staffId;
@@ -72,6 +80,13 @@ public class StaffEntity implements Serializable {
         this.managedOrders = managedOrders;
     }
 
-    
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
 
 }

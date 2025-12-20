@@ -39,7 +39,7 @@ public class ProductService {
             existingProduct.setStock(productDetails.getStock());
             existingProduct.setDescription(productDetails.getDescription());
             existingProduct.setCategory(productDetails.getCategory());
-            existingProduct.setAdmin(productDetails.getAdmin());
+            
 
             return productRepo.save(existingProduct);
         }

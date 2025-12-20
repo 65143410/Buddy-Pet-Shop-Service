@@ -44,14 +44,17 @@ public class OrderController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    class OrderRequestDTO {
+    public static class OrderRequestDTO {
         private OrderEntity order;
         private List<com.database.petshop.entity.OrderDetailEntity> details;
+        public OrderRequestDTO() {}
         public OrderEntity getOrder() {
             return order;
         }
+        public void setOrder(OrderEntity order) { this.order = order; }
         public List<com.database.petshop.entity.OrderDetailEntity> getDetails() {
             return details;
         }
+        public void setDetails(List<com.database.petshop.entity.OrderDetailEntity> details) { this.details = details; }
     }
 }

@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -41,10 +43,12 @@ public class ProductEntity implements Serializable {
     private CategoryEntity category;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "Admin_ID")
+    @JoinColumn(name = "Admin_ID", updatable = false)
+    @JsonIgnore
     private AdminEntity admin;
     
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<OrderDetailEntity> orderDetails;
 
     public Integer getStock() {

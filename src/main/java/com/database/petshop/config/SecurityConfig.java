@@ -22,10 +22,12 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable()) 
             .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**","/swagger-ui.html", "/v3/api-docs.yaml").permitAll()
                 .requestMatchers("/api/auth/**").permitAll() 
                 .requestMatchers("/api/product/all", "/api/product/{id}").permitAll()
                 .requestMatchers("/api/category/all").permitAll()
-                .anyRequest().authenticated() 
+                // .anyRequest().authenticated() 
+                .anyRequest().permitAll()
             )
             .httpBasic(Customizer.withDefaults()); 
             

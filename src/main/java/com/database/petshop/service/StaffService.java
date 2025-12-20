@@ -11,12 +11,22 @@ import com.database.petshop.repository.StaffRepository;
 
 @Service
 public class StaffService {
-    @Autowired private StaffRepository staffRepo;
 
-    public List<StaffEntity> findAllStaff() { return staffRepo.findAll(); }
-    public StaffEntity findStaffById(Long id) { return staffRepo.findById(id).orElse(null); }
-    public StaffEntity saveStaff(StaffEntity staff) { return staffRepo.save(staff); }
-    
+    @Autowired
+    private StaffRepository staffRepo;
+
+    public List<StaffEntity> findAllStaff() {
+        return staffRepo.findAll();
+    }
+
+    public StaffEntity findStaffById(Long id) {
+        return staffRepo.findById(id).orElse(null);
+    }
+
+    public StaffEntity saveStaff(StaffEntity staff) {
+        return staffRepo.save(staff);
+    }
+
     public StaffEntity updateStaff(Long id, StaffEntity details) {
         Optional<StaffEntity> optional = staffRepo.findById(id);
         if (optional.isPresent()) {
@@ -28,5 +38,16 @@ public class StaffService {
         }
         return null;
     }
-    public void deleteStaff(Long id) { staffRepo.deleteById(id); }
+
+    public void deleteStaff(Long id) {
+        staffRepo.deleteById(id);
+    }
+
+    public void updateStatus(Long id, String newStatus) {
+        StaffEntity staff = staffRepo.findById(id) 
+                .orElseThrow(() -> new RuntimeException("ไม่พบพนักงานไอดี: " + id));
+
+        staff.setStatus(newStatus); 
+        staffRepo.save(staff);
+    }
 }

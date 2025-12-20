@@ -3,6 +3,8 @@ package com.database.petshop.entity;
 import java.io.Serializable;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -35,9 +37,11 @@ public class CustomerEntity implements Serializable {
     private String address;
 
     @Column(name = "Password")
+    @JsonIgnore
     private String password;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<OrderEntity> orders;
 
     public Long getCustomerId() {

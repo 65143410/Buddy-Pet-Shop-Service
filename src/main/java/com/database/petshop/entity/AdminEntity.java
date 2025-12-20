@@ -3,6 +3,8 @@ package com.database.petshop.entity;
 import java.io.Serializable;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -27,6 +29,7 @@ public class AdminEntity implements Serializable {
     private String email;
 
     @Column(name = "Password", nullable = false)
+    @JsonIgnore
     private String password;
 
     @OneToMany(mappedBy = "admin") 
