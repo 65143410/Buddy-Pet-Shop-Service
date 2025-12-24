@@ -19,7 +19,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "Order")
+@Table(name = "Orders")
 public class OrderEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,6 +50,8 @@ public class OrderEntity implements Serializable {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<PaymentEntity> payments;
 
+    @Column(name = "Invoice_No", unique = true) 
+    private String invoiceNo;
     
     public CustomerEntity getCustomer() {
         return customer;
@@ -113,6 +115,14 @@ public class OrderEntity implements Serializable {
 
     public void setStatus(StatusEntity status) {
         this.status = status;
+    }
+
+    public String getInvoiceNo() {
+        return invoiceNo;
+    }
+
+    public void setInvoiceNo(String invoiceNo) {
+        this.invoiceNo = invoiceNo;
     }
 
     

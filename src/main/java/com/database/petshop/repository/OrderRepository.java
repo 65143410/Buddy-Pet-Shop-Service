@@ -14,6 +14,10 @@ import com.database.petshop.entity.OrderEntity;
 @Repository
 public interface OrderRepository extends JpaRepository<OrderEntity, Long> {
 
+    List<OrderEntity> findByStatus_StatusId(Long statusId);
+
+    List<OrderEntity> findByCustomerCustomerIdOrderByOrderDateDesc(Long customerId);
+
     List<OrderEntity> findByStaffIsNullAndStatusStatusIdOrderByOrderDateAsc(Long statusId);
 
     List<OrderEntity> findByStaffStaffIdAndStatusStatusId(Long staffId, Long statusId);
@@ -39,4 +43,7 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Long> {
 
     @Query("SELECT o FROM OrderEntity o WHERE o.status.statusName = 'ชำระเงินแล้ว'")
     List<OrderEntity> findPaidOrdersForStaff();
+
+    @Query("SELECT SUM(o.totalAmount) FROM OrderEntity o")
+    Double sumTotalAmount();
 }

@@ -49,6 +49,9 @@ public class OrderService {
     @Autowired
     private PaymentRepository paymentRepo;
 
+    @Autowired
+    private OrderRepository orderRepository;
+
     public List<OrderEntity> findAllOrders() {
         return orderRepo.findAll();
     }
@@ -57,6 +60,10 @@ public class OrderService {
         return orderRepo.findById(id).orElse(null);
     }
 
+    public List<OrderEntity> getOrdersByCustomerId(Long customerId) {
+        return orderRepository.findByCustomerCustomerIdOrderByOrderDateDesc(customerId);
+    }
+    
     @Transactional
     public OrderEntity createOrder(OrderEntity order, List<OrderDetailEntity> details) {
         if (order.getCustomer() == null || order.getCustomer().getCustomerId() == null) {

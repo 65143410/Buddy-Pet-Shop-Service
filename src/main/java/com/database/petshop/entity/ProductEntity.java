@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -33,13 +34,14 @@ public class ProductEntity implements Serializable {
     private BigDecimal price;
 
     @Column(name = "Stock", nullable = false)
-    private Integer stock;
+    private Integer stock = 0; 
 
     @Column(name = "Description")
     private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "Category_ID", nullable = false)
+    @JsonIgnoreProperties("products")
     private CategoryEntity category;
     
     @ManyToOne(fetch = FetchType.LAZY)
