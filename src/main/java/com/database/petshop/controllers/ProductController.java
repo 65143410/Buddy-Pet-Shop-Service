@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.database.petshop.entity.ProductEntity;
+import com.database.petshop.entity.product_logs;
 import com.database.petshop.service.ProductService;
 
 import jakarta.validation.Valid;
@@ -35,21 +36,21 @@ public class ProductController {
         return ResponseEntity.ok(productService.findAllProduct());
     }
 
-   @GetMapping("/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<ProductEntity> getProductById(@PathVariable Long id) {
         ProductEntity product = productService.findProductById(id);
-        return ResponseEntity.ok(product); 
+        return ResponseEntity.ok(product);
     }
 
     @PostMapping("/add")
-    public ResponseEntity<ProductEntity> createProduct( @Valid @RequestBody ProductEntity product) {
-        ProductEntity savedProduct = productService.saveProduct(product);
+    public ResponseEntity<ProductEntity> createProduct(@Valid @RequestBody ProductEntity product) {
+        ProductEntity savedProduct = productService.saveProduct(product, "Admin");
         return ResponseEntity.status(HttpStatus.CREATED).body(savedProduct);
     }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<ProductEntity> updateProduct(@PathVariable Long id, @Valid @RequestBody ProductEntity productDetails) {
-        ProductEntity updatedProduct = productService.updateProduct(id, productDetails);
+        ProductEntity updatedProduct = productService.updateProduct(id, productDetails, "Admin");
         return ResponseEntity.ok(updatedProduct);
     }
 
@@ -63,5 +64,16 @@ public class ProductController {
     public ResponseEntity<List<Map<String, Object>>> getLowStockProducts(
             @RequestParam(defaultValue = "5") int threshold) {
         return ResponseEntity.ok(productService.getLowStockAlert(threshold));
+    }
+
+    @GetMapping("/logs")
+    public ResponseEntity<List<product_logs>> getAllLogs() {
+        // แนะนำให้เรียกผ่าน Service นะครับ
+        return ResponseEntity.ok(productService.getAllProductLogs());
+    }
+
+    @GetMapping("/logs/{productId}")
+    public ResponseEntity<List<product_logs>> getLogsByProduct(@PathVariable Long productId) {
+        return ResponseEntity.ok(productService.getProductLogsById(productId));
     }
 }
