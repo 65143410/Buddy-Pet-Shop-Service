@@ -49,6 +49,9 @@ public class CustomerEntity implements Serializable {
     @JsonIgnore
     private List<OrderEntity> orders;
 
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<PetEntity> pets;
+
     public Long getCustomerId() {
         return customerId;
     }
@@ -103,6 +106,14 @@ public class CustomerEntity implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public List<PetEntity> getPets() {
+        return pets;
+    }
+
+    public void setPets(List<PetEntity> pets) {
+        this.pets = pets;
     }
 
 }

@@ -84,4 +84,14 @@ public class AdminService {
 
         return stats;
     }
+
+    @Transactional
+    public ProductEntity saveProductWithFilters(ProductEntity product) {
+        if (product.getTargetPetType() == null)
+            product.setTargetPetType("ALL");
+        if (product.getSuitableForDisease() == null)
+            product.setSuitableForDisease("NONE");
+
+        return productRepo.save(product);
+    }
 }

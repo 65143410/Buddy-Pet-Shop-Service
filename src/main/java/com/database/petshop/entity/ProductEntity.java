@@ -34,7 +34,7 @@ public class ProductEntity implements Serializable {
     private BigDecimal price;
 
     @Column(name = "Stock", nullable = false)
-    private Integer stock = 0; 
+    private Integer stock = 0;
 
     @Column(name = "Description")
     private String description;
@@ -43,12 +43,18 @@ public class ProductEntity implements Serializable {
     @JoinColumn(name = "Category_ID", nullable = false)
     @JsonIgnoreProperties("products")
     private CategoryEntity category;
-    
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "Admin_ID", updatable = false)
     @JsonIgnore
     private AdminEntity admin;
-    
+
+    @Column(name = "Target_Pet_Type")
+    private String targetPetType;
+
+    @Column(name = "Suitable_For_Disease")
+    private String suitableForDisease;
+
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<OrderDetailEntity> orderDetails;
@@ -56,7 +62,7 @@ public class ProductEntity implements Serializable {
     public Integer getStock() {
         return stock;
     }
-    
+
     public void setStock(Integer stock) {
         this.stock = stock;
     }
@@ -117,5 +123,20 @@ public class ProductEntity implements Serializable {
         this.orderDetails = orderDetails;
     }
 
-    
+    public String getTargetPetType() {
+        return targetPetType;
+    }
+
+    public void setTargetPetType(String targetPetType) {
+        this.targetPetType = targetPetType;
+    }
+
+    public String getSuitableForDisease() {
+        return suitableForDisease;
+    }
+
+    public void setSuitableForDisease(String suitableForDisease) {
+        this.suitableForDisease = suitableForDisease;
+    }
+
 }
