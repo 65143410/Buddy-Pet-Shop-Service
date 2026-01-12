@@ -41,6 +41,9 @@ public class StaffEntity implements Serializable {
     @Column(name = "status")
     private String status = "ACTIVE";
 
+    @Column(name = "position")
+    private String position;
+
     public Long getStaffId() {
         return staffId;
     }
@@ -89,5 +92,12 @@ public class StaffEntity implements Serializable {
         this.status = status;
     }
 
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
+    }
 
 }

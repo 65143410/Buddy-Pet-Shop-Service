@@ -39,8 +39,14 @@ public class StaffController {
     }
 
     @PutMapping("/{id}/status")
-    public ResponseEntity<String> updateStaffStatus(@PathVariable Long id,@Valid @RequestParam String newStatus) {
+    public ResponseEntity<String> updateStaffStatus(@PathVariable Long id, @Valid @RequestParam String newStatus) {
         staffService.updateStatus(id, newStatus);
         return ResponseEntity.ok("อัปเดตสถานะพนักงานเป็น " + newStatus + " เรียบร้อยแล้ว");
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<StaffEntity> updateStaff(@PathVariable Long id, @RequestBody StaffEntity staff) {
+        StaffEntity updatedStaff = staffService.updateStaff(id, staff);
+        return ResponseEntity.ok(updatedStaff);
     }
 }
