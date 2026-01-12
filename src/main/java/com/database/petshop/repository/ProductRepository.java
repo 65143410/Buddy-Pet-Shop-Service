@@ -15,7 +15,7 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
 
     @Query("SELECT p FROM ProductEntity p WHERE " +
             "(p.targetPetType = :type OR p.targetPetType = 'ALL') AND " +
-            "(p.suitableForDisease = :disease)")
+            "(p.suitableForDisease = :disease OR p.suitableForDisease = 'NONE')")
     List<ProductEntity> findRecommendations(@Param("type") String type, @Param("disease") String disease);
 
 }
