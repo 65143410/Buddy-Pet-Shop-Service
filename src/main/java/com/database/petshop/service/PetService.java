@@ -14,6 +14,22 @@ public class PetService {
     @Autowired
     private PetRepository petRepo;
 
+    @Autowired
+    private com.database.petshop.repository.CustomerRepository customerRepo;
+
+    public PetEntity createPet(com.database.petshop.dto.PetRequestDTO dto) {
+        com.database.petshop.entity.CustomerEntity customer = customerRepo.findById(dto.getCustomerId())
+                .orElseThrow(() -> new RuntimeException("ไม่พบลูกค้า ID: " + dto.getCustomerId()));
+
+        PetEntity pet = new PetEntity();
+        pet.setPetName(dto.getPetName());
+        pet.setPetType(dto.getPetType());
+        pet.setCongenitalDisease(dto.getCongenitalDisease());
+        pet.setCustomer(customer);
+
+        return petRepo.save(pet);
+    }
+
     public PetEntity savePet(PetEntity pet) {
         return petRepo.save(pet);
     }

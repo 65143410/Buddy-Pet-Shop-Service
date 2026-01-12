@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.database.petshop.entity.ProductEntity;
-import com.database.petshop.entity.product_logs;
+import com.database.petshop.entity.ProductLog;
 import com.database.petshop.service.ProductService;
 
 import jakarta.validation.Valid;
@@ -49,7 +49,8 @@ public class ProductController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<ProductEntity> updateProduct(@PathVariable Long id, @Valid @RequestBody ProductEntity productDetails) {
+    public ResponseEntity<ProductEntity> updateProduct(@PathVariable Long id,
+            @Valid @RequestBody ProductEntity productDetails) {
         ProductEntity updatedProduct = productService.updateProduct(id, productDetails, "Admin");
         return ResponseEntity.ok(updatedProduct);
     }
@@ -67,13 +68,13 @@ public class ProductController {
     }
 
     @GetMapping("/logs")
-    public ResponseEntity<List<product_logs>> getAllLogs() {
+    public ResponseEntity<List<ProductLog>> getAllLogs() {
         // แนะนำให้เรียกผ่าน Service นะครับ
         return ResponseEntity.ok(productService.getAllProductLogs());
     }
 
     @GetMapping("/logs/{productId}")
-    public ResponseEntity<List<product_logs>> getLogsByProduct(@PathVariable Long productId) {
+    public ResponseEntity<List<ProductLog>> getLogsByProduct(@PathVariable Long productId) {
         return ResponseEntity.ok(productService.getProductLogsById(productId));
     }
 }

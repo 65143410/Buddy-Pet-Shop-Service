@@ -24,8 +24,8 @@ public class PetController {
     private PetService petService;
 
     @PostMapping("/add")
-    public PetEntity addPet(@RequestBody PetEntity pet) {
-        return petService.savePet(pet);
+    public PetEntity addPet(@jakarta.validation.Valid @RequestBody com.database.petshop.dto.PetRequestDTO petDto) {
+        return petService.createPet(petDto);
     }
 
     @GetMapping("/customer/{customerId}")

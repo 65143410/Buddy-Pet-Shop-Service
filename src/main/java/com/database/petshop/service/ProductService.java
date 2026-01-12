@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.database.petshop.entity.ProductEntity;
-import com.database.petshop.entity.product_logs;
+import com.database.petshop.entity.ProductLog;
 import com.database.petshop.repository.ProductLogRepository;
 import com.database.petshop.repository.ProductRepository;
 
@@ -39,17 +39,17 @@ public class ProductService {
     }
 
     // public ProductEntity updateProduct(Long id, ProductEntity productDetails) {
-    //     Optional<ProductEntity> optionalProduct = productRepo.findById(id);
-    //     if (optionalProduct.isPresent()) {
-    //         ProductEntity existingProduct = optionalProduct.get();
-    //         existingProduct.setProductName(productDetails.getProductName());
-    //         existingProduct.setPrice(productDetails.getPrice());
-    //         existingProduct.setStock(productDetails.getStock());
-    //         existingProduct.setDescription(productDetails.getDescription());
-    //         existingProduct.setCategory(productDetails.getCategory());
-    //         return productRepo.save(existingProduct);
-    //     }
-    //     return null;
+    // Optional<ProductEntity> optionalProduct = productRepo.findById(id);
+    // if (optionalProduct.isPresent()) {
+    // ProductEntity existingProduct = optionalProduct.get();
+    // existingProduct.setProductName(productDetails.getProductName());
+    // existingProduct.setPrice(productDetails.getPrice());
+    // existingProduct.setStock(productDetails.getStock());
+    // existingProduct.setDescription(productDetails.getDescription());
+    // existingProduct.setCategory(productDetails.getCategory());
+    // return productRepo.save(existingProduct);
+    // }
+    // return null;
     // }
     public ProductEntity updateProduct(Long id, ProductEntity productDetails) {
         return updateProduct(id, productDetails, "System");
@@ -68,11 +68,11 @@ public class ProductService {
         }).collect(Collectors.toList());
     }
 
-    public List<product_logs> getAllProductLogs() {
+    public List<ProductLog> getAllProductLogs() {
         return productLogRepo.findAll();
     }
 
-    public List<product_logs> getProductLogsById(Long productId) {
+    public List<ProductLog> getProductLogsById(Long productId) {
         return productLogRepo.findByProductIdOrderByTimestampDesc(productId);
     }
 
@@ -81,7 +81,7 @@ public class ProductService {
 
         ProductEntity savedProduct = productRepo.save(product);
 
-        product_logs log = new product_logs();
+        ProductLog log = new ProductLog();
         log.setProductId(savedProduct.getProductId());
         log.setProductName(savedProduct.getProductName());
         log.setAction("ADD");
@@ -114,7 +114,7 @@ public class ProductService {
 
             ProductEntity updatedProduct = productRepo.save(existingProduct);
 
-            product_logs log = new product_logs();
+            ProductLog log = new ProductLog();
             log.setProductId(updatedProduct.getProductId());
             log.setProductName(updatedProduct.getProductName());
             log.setAction("UPDATE");
@@ -137,7 +137,7 @@ public class ProductService {
         ProductEntity product = productRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("ไม่พบสินค้า ID: " + id));
 
-        product_logs log = new product_logs();
+        ProductLog log = new ProductLog();
         log.setProductName(product.getProductName());
         log.setAction("DELETE");
         log.setQuantityChange(0);
