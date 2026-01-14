@@ -18,7 +18,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.database.petshop.dto.OrderRequestDTO;
+import com.database.petshop.entity.CustomerEntity;
 import com.database.petshop.entity.OrderEntity;
+import com.database.petshop.repository.CustomerRepository;
 import com.database.petshop.service.OrderService;
 
 import jakarta.validation.Valid;
@@ -30,6 +32,9 @@ public class OrderController {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private CustomerRepository customerRepo;
 
     @GetMapping("/all")
     public ResponseEntity<List<OrderEntity>> getAllOrders() {
@@ -126,5 +131,20 @@ public class OrderController {
         List<OrderEntity> orders = orderService.getPendingVerificationOrders();
         return ResponseEntity.ok(orders);
     }
-    
+
+    @GetMapping("/customer/{customerId}")
+    public ResponseEntity<List<OrderEntity>> getOrdersByCustomer(@PathVariable Long customerId) {
+        return ResponseEntity.ok(orderService.getOrdersByCustomerId(customerId));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<CustomerEntity> updateCustomer(@PathVariable Long id, @RequestBody CustomerEntity details) {
+        CustomerEntity customer = customerRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("ไม่พบลูกค้า ID: " + id));
+
+        customer.setCustomerName(details.getCustomerName());
+        // เพิ่ม field อื่นๆ ที่ต้องการให้แก้ได้ เช่น phone, email
+
+        return ResponseEntity.ok(customerRepo.save(customer));
+    }
 }

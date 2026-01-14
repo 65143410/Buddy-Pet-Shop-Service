@@ -49,9 +49,6 @@ public class OrderService {
     @Autowired
     private PaymentRepository paymentRepo;
 
-    @Autowired
-    private OrderRepository orderRepository;
-
     public List<OrderEntity> findAllOrders() {
         return orderRepo.findAll();
     }
@@ -61,16 +58,17 @@ public class OrderService {
     }
 
     public List<OrderEntity> getOrdersByCustomerId(Long customerId) {
-        return orderRepository.findByCustomerCustomerIdOrderByOrderDateDesc(customerId);
+        return orderRepo.findByCustomerCustomerIdOrderByOrderDateDesc(customerId);
     }
-    
+
     @Transactional
     public OrderEntity createOrder(OrderEntity order, List<OrderDetailEntity> details) {
         if (order.getCustomer() == null || order.getCustomer().getCustomerId() == null) {
             throw new RuntimeException("ไม่สามารถสร้างออเดอร์ได้: กรุณาระบุข้อมูลลูกค้า");
         }
         customerRepo.findById(order.getCustomer().getCustomerId())
-                .orElseThrow(() -> new RuntimeException("ไม่พบข้อมูลลูกค้า ID: " + order.getCustomer().getCustomerId()));
+                .orElseThrow(
+                        () -> new RuntimeException("ไม่พบข้อมูลลูกค้า ID: " + order.getCustomer().getCustomerId()));
 
         if (order.getStaff() != null && order.getStaff().getStaffId() != null) {
             staffRepo.findById(order.getStaff().getStaffId())
@@ -275,12 +273,12 @@ public class OrderService {
     }
 
     public List<OrderEntity> getPendingVerificationOrders() {
-    String statusName = "รอตรวจสอบยอดเงิน"; 
-    List<OrderEntity> orders = orderRepo.findByStatus_StatusName(statusName);
-    
-    if (orders.isEmpty()) {
-        
+        String statusName = "รอตรวจสอบยอดเงิน";
+        List<OrderEntity> orders = orderRepo.findByStatus_StatusName(statusName);
+
+        if (orders.isEmpty()) {
+
+        }
+        return orders;
     }
-    return orders;
-}
 }
