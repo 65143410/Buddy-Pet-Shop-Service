@@ -1,5 +1,6 @@
 package com.database.petshop.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.ibm.db2.cmx.annotation.Table;
 
 import jakarta.persistence.Column;
@@ -30,6 +31,7 @@ public class PetEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "Customer_ID")
+    @JsonBackReference
     private CustomerEntity customer;
 
     public Long getPetId() {

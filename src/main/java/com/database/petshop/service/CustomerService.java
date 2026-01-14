@@ -37,10 +37,11 @@ public class CustomerService {
     public CustomerEntity login(String email, String rawPassword) {
         CustomerEntity customer = customerRepo.findByEmail(email);
         if (customer != null && passwordEncoder.matches(rawPassword, customer.getPassword())) {
-            return customer; 
+            return customer;
         }
-        return null; 
+        return null;
     }
+
     public CustomerEntity updateCustomer(Long id, CustomerEntity details) {
         Optional<CustomerEntity> optional = customerRepo.findById(id);
         if (optional.isPresent()) {
@@ -56,8 +57,41 @@ public class CustomerService {
         }
         return null;
     }
+
     public void deleteCustomer(Long id) {
         customerRepo.deleteById(id);
     }
 
+    @Autowired
+    private com.database.petshop.repository.PetRepository petRepo;
+
+    @org.springframework.transaction.annotation.Transactional
+    public CustomerEntity register(com.database.petshop.dto.RegisterRequest request) {
+        // 1. ตรวจสอบอีเมลซ้ำ
+        if (customerRepo.findByEmail(request.getEmail()) != null) {
+            throw new RuntimeException("อีเมลนี้มีผู้ใช้งานแล้ว");
+        }
+
+        // 2. สร้างลูกค้าใหม่
+        CustomerEntity customer = new CustomerEntity();
+        customer.setCustomerName(request.getCustomerName());
+        customer.setEmail(request.getEmail());
+        customer.setPassword(passwordEncoder.encode(request.getPassword()));
+        customer.setPhone(request.getPhone());
+        customer.setAddress(request.getAddress());
+
+        CustomerEntity savedCustomer = customerRepo.save(customer);
+
+        // 3. ถ้ามีข้อมูลสัตว์เลี้ยง ให้บันทึกด้วย
+        if (request.getPetName() != null && !request.getPetName().isEmpty()) {
+            com.database.petshop.entity.PetEntity pet = new com.database.petshop.entity.PetEntity();
+            pet.setPetName(request.getPetName());
+            pet.setPetType(request.getPetType());
+            pet.setCongenitalDisease(request.getCongenitalDisease());
+            pet.setCustomer(savedCustomer);
+            petRepo.save(pet);
+        }
+
+        return savedCustomer;
+    }
 }

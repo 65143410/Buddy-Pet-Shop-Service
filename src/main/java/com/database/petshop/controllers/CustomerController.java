@@ -22,7 +22,6 @@ import com.database.petshop.service.OrderService;
 
 import jakarta.validation.Valid;
 
-
 @RestController
 @RequestMapping("/api/customer")
 @CrossOrigin(origins = "http://localhost:4200")
@@ -30,13 +29,13 @@ public class CustomerController {
     @Autowired
     private CustomerService customerService;
 
-    @Autowired 
+    @Autowired
     private OrderService orderService;
 
     @GetMapping("/all")
     public ResponseEntity<List<CustomerEntity>> getAllCustomers() {
-        List<CustomerEntity> customers = customerService.findAllCustomers(); 
-        return ResponseEntity.ok(customers); 
+        List<CustomerEntity> customers = customerService.findAllCustomers();
+        return ResponseEntity.ok(customers);
     }
 
     @GetMapping("/{id}")
@@ -49,13 +48,15 @@ public class CustomerController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<CustomerEntity> createCustomer(@Valid @RequestBody CustomerEntity customer) {
-        CustomerEntity savedCustomer = customerService.saveCustomer(customer);
+    public ResponseEntity<CustomerEntity> register(
+            @Valid @RequestBody com.database.petshop.dto.RegisterRequest request) {
+        CustomerEntity savedCustomer = customerService.register(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedCustomer);
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<CustomerEntity> updateCustomer(@PathVariable Long id, @Valid @RequestBody CustomerEntity details) {
+    public ResponseEntity<CustomerEntity> updateCustomer(@PathVariable Long id,
+            @Valid @RequestBody CustomerEntity details) {
         CustomerEntity updated = customerService.updateCustomer(id, details);
         if (updated != null) {
             return ResponseEntity.ok(updated);
