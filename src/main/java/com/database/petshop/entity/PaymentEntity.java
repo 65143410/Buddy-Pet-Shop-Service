@@ -13,7 +13,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
+
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
@@ -40,8 +40,7 @@ public class PaymentEntity implements Serializable {
     @JsonIgnore
     private OrderEntity order;
 
-    @Lob
-    @Column(name = "SLIP_IMAGE", columnDefinition = "CLOB")
+    @Column(name = "SLIP_IMAGE", columnDefinition = "TEXT")
     private String slipImage;
 
     public Long getPaymentId() {

@@ -50,10 +50,13 @@ public class OrderController {
     @PostMapping("/create")
     public ResponseEntity<?> createOrder(@Valid @RequestBody OrderRequestDTO request) {
         try {
-            OrderEntity order = orderService.createOrder(request.getOrder(), request.getDetails());
+            // Create Order with Slip (Base64 string passed directly)
+            OrderEntity order = orderService.createOrderWithSlip(request.getOrder(), request.getDetails(),
+                    request.getSlipImage());
             return ResponseEntity.ok(order);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body("Error creating order: " + e.getMessage());
         }
     }
 

@@ -50,4 +50,76 @@ public class ProductLog {
         this.timestamp = LocalDateTime.now();
     }
 
+    // Manual Getters and Setters
+    public Long getLogId() {
+        return logId;
+    }
+
+    public void setLogId(Long logId) {
+        this.logId = logId;
+    }
+
+    public Long getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Long productId) {
+        this.productId = productId;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public String getAction() {
+        return action;
+    }
+
+    public void setAction(String action) {
+        this.action = action;
+    }
+
+    public Integer getQuantityChange() {
+        return quantityChange;
+    }
+
+    public void setQuantityChange(Integer quantityChange) {
+        this.quantityChange = quantityChange;
+    }
+
+    public Integer getFinalStock() {
+        return finalStock;
+    }
+
+    public void setFinalStock(Integer finalStock) {
+        this.finalStock = finalStock;
+    }
+
+    public String getStaffName() {
+        return staffName;
+    }
+
+    public void setStaffName(String staffName) {
+        this.staffName = staffName;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
+    }
 }

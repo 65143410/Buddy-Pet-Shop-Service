@@ -10,13 +10,13 @@ import jakarta.validation.constraints.NotNull;
 
 public class OrderRequestDTO {
 
-    @Valid 
-    @NotNull(message = "กรุณาระบุข้อมูลออเดอร์") 
-    private OrderEntity order; 
+    @Valid
+    @NotNull(message = "กรุณาระบุข้อมูลออเดอร์")
+    private OrderEntity order;
 
-    @Valid 
-    @NotNull(message = "กรุณาระบุรายละเอียดสินค้า") 
-    private List<OrderDetailEntity> details; 
+    @Valid
+    @NotNull(message = "กรุณาระบุรายละเอียดสินค้า")
+    private List<OrderDetailEntity> details;
 
     public OrderEntity getOrder() {
         return order;
@@ -32,5 +32,15 @@ public class OrderRequestDTO {
 
     public void setDetails(List<OrderDetailEntity> details) {
         this.details = details;
+    }
+
+    private String slipImage;
+
+    public String getSlipImage() {
+        return slipImage;
+    }
+
+    public void setSlipImage(String slipImage) {
+        this.slipImage = slipImage;
     }
 }

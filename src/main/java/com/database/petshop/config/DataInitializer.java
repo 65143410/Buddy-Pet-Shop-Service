@@ -1,11 +1,12 @@
 package com.database.petshop.config;
 
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -20,6 +21,7 @@ import com.database.petshop.entity.CustomerEntity;
 import com.database.petshop.entity.OrderDetailEntity;
 import com.database.petshop.entity.OrderEntity;
 import com.database.petshop.entity.PaymentEntity;
+import com.database.petshop.entity.PetEntity;
 import com.database.petshop.entity.ProductEntity;
 import com.database.petshop.entity.StaffEntity;
 import com.database.petshop.entity.StatusEntity;
@@ -30,9 +32,12 @@ import com.database.petshop.repository.CustomerRepository;
 import com.database.petshop.repository.OrderDetailRepository;
 import com.database.petshop.repository.OrderRepository;
 import com.database.petshop.repository.PaymentRepository;
+import com.database.petshop.repository.PetRepository;
 import com.database.petshop.repository.ProductRepository;
 import com.database.petshop.repository.StaffRepository;
 import com.database.petshop.repository.StatusRepository;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component
 public class DataInitializer implements CommandLineRunner {
@@ -56,187 +61,372 @@ public class DataInitializer implements CommandLineRunner {
     @Autowired
     private PaymentRepository paymentRepo;
     @Autowired
+    private PetRepository petRepo;
+    @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
     private CancelOrderRepository cancelOrderRepo;
 
-    private final Random random = new Random();
-
     @Override
     @Transactional
     public void run(String... args) throws Exception {
-        if (statusRepo.count() > 0) {
+        boolean isStatusInitialized = statusRepo.count() > 0;
+        boolean isOrderInitialized = orderRepo.count() > 0;
+
+        if (isStatusInitialized && isOrderInitialized) {
+            System.out.println(">>> Database already initialized (Status & Orders exist). Skipping.");
             return;
         }
 
-        String[] statusNames = { "รอชำระเงิน", "รอตรวจสอบยอดเงิน", "ชำระเงินแล้ว", "กำลังจัดเตรียมสินค้า", "จัดส่งแล้ว",
-                "ยกเลิก/สลิปไม่ถูกต้อง" };
-        for (String name : statusNames) {
-            StatusEntity s = new StatusEntity();
-            s.setStatusName(name);
-            statusRepo.save(s);
-        }
+        System.out.println(">>> Initializing Data from mock_data.json...");
 
-        String[] catNames = { "อาหารสัตว์", "อุปกรณ์และของใช้", "ของเล่นสัตว์เลี้ยง", "ยาและเวชภัณฑ์" };
-        for (String name : catNames) {
-            CategoryEntity cat = new CategoryEntity();
-            cat.setCategoryName(name);
-            categoryRepo.save(cat);
-        }
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.findAndRegisterModules(); // Support Java 8 Date/Time
 
-        String pass = passwordEncoder.encode("123456");
-        AdminEntity admin = new AdminEntity();
-        admin.setName("แอดมินสมชาย");
-        admin.setEmail("admin1@petshop.com");
-        admin.setPassword(pass);
-        adminRepo.save(admin);
+        try (InputStream inputStream = getClass().getResourceAsStream("/mock_data.json")) {
+            MockDataRoot data = mapper.readValue(inputStream, MockDataRoot.class);
 
-        StaffEntity staff1 = saveStaff("พนักงานวิภา", "staff1@petshop.com", pass);
-        StaffEntity staff2 = saveStaff("พนักงานมานะ", "staff2@petshop.com", pass);
-
-        CategoryEntity cat1 = categoryRepo.findByCategoryName("อาหารสัตว์");
-        saveProduct("อาหารสุนัขโต Premium 10kg", new BigDecimal("1550"), 50, "สารอาหารครบถ้วน", cat1, admin);
-        saveProduct("อาหารแมวเปียก (12 ซอง)", new BigDecimal("240"), 100, "รสปลาทูน่าและไก่", cat1, admin);
-        saveProduct("ขนมขัดฟันสุนัข XL", new BigDecimal("350"), 80, "ช่วยลดคราบหินปูน", cat1, admin);
-        saveProduct("นมแพะสำหรับลูกสัตว์ 400ml", new BigDecimal("65"), 200, "ย่อยง่าย แคลเซียมสูง", cat1, admin);
-        saveProduct("อาหารเม็ดแมวสูตร Indoor 2kg", new BigDecimal("490"), 40, "ลดกลิ่นมูลและก้อนขน", cat1, admin);
-
-        CategoryEntity cat2 = categoryRepo.findByCategoryName("อุปกรณ์และของใช้");
-        saveProduct("สายจูงรัดอกสะท้อนแสง", new BigDecimal("290"), 30, "ปรับสายได้ แข็งแรง", cat2, admin);
-        saveProduct("กระบะทรายแมวทรงโดม", new BigDecimal("850"), 15, "กันทรายกระเด็นและเก็บกลิ่น", cat2, admin);
-        saveProduct("หวีแปรงขนสแตนเลส", new BigDecimal("150"), 50, "ลดการพันกันของเส้นขน", cat2, admin);
-        saveProduct("ชามอาหารคู่สแตนเลส", new BigDecimal("320"), 25, "มียางกันลื่นใต้ฐาน", cat2, admin);
-        saveProduct("ที่นอนนุ่มฟูทรงวงกลม", new BigDecimal("550"), 10, "ซักทำความสะอาดได้", cat2, admin);
-
-        CategoryEntity cat3 = categoryRepo.findByCategoryName("ของเล่นสัตว์เลี้ยง");
-        saveProduct("บอลยางมีเสียงตะมุตะมิ", new BigDecimal("89"), 100, "ทนต่อการกัด", cat3, admin);
-        saveProduct("ไม้ตกแมวขนนกพรีเมียม", new BigDecimal("120"), 60, "ดึงดูดสัญชาตญาณนักล่า", cat3, admin);
-        saveProduct("อุโมงค์แมว 3 ทางพับได้", new BigDecimal("450"), 20, "พื้นที่เล่นซ่อนหา", cat3, admin);
-        saveProduct("เชือกถักขัดฟันสำหรับสุนัข", new BigDecimal("190"), 45, "ฝ้ายธรรมชาติ 100%", cat3, admin);
-        saveProduct("คอนโดแมว 3 ชั้น", new BigDecimal("1850"), 5, "มีที่ลับเล็บในตัว", cat3, admin);
-
-        CategoryEntity cat4 = categoryRepo.findByCategoryName("ยาและเวชภัณฑ์");
-        saveProduct("ยาหยอดกำจัดเห็บหมัด", new BigDecimal("220"), 100, "ป้องกันได้นาน 1 เดือน", cat4, admin);
-        saveProduct("น้ำยาเช็ดทำความสะอาดหู", new BigDecimal("180"), 50, "ลดกลิ่นอับและแบคทีเรีย", cat4, admin);
-        saveProduct("วิตามินบำรุงเลือดและขน", new BigDecimal("450"), 30, "ชนิดเม็ดทานง่าย", cat4, admin);
-        saveProduct("สเปรย์รักษาแผลสดสัตว์เลี้ยง", new BigDecimal("280"), 40, "ไม่แสบ แห้งไว", cat4, admin);
-        saveProduct("ผงโปรไบโอติกส์เสริมภูมิ", new BigDecimal("590"), 25, "ผสมในอาหาร ช่วยระบบย่อย", cat4, admin);
-
-        saveCustomer("สมศักดิ์ รักสัตว์", "somsak@email.com", pass, "0811111111", "123/4 ม.5 จ.ชลบุรี 20000");
-        saveCustomer("มณี ใจดี", "manee@email.com", pass, "0822222222", "99/1 ซ.อารีย์ กทม. 10400");
-        saveCustomer("ธนา รวยมาก", "thana@email.com", pass, "0833333333", "8/88 ถ.นิมมาน จ.เชียงใหม่ 50200");
-        saveCustomer("วิไล พึ่งพา", "wilai@email.com", pass, "0844444444", "45 ถ.มิตรภาพ จ.ขอนแก่น 40000");
-        saveCustomer("จอย จอมแก่น", "joy@email.com", pass, "0855555555", "77 หมู่บ้านเพชร จ.นนทบุรี 11000");
-        saveCustomer("กิตติศักดิ์ มั่นคง", "kitti@email.com", pass, "0866666666", "21/2 ถ.พระราม 2 กทม. 10150");
-        saveCustomer("นารี รัตนา", "naree@email.com", pass, "0877777777", "303 หอพักสบาย จ.ปทุมธานี 12120");
-        saveCustomer("ปกรณ์ ประเสริฐ", "pakorn@email.com", pass, "0888888888", "10/1 ถ.สุขุมวิท จ.ระยอง 21000");
-        saveCustomer("รัตนา มานะ", "rattana@email.com", pass, "0899999999", "555 ถ.สีลม เขตบางรัก กทม. 10500");
-        saveCustomer("สุวิทย์ วิทยฐานะ", "suwit@email.com", pass, "0800000000", "9/9 ถ.สุรนารี จ.นครราชสีมา 30000");
-
-        List<CustomerEntity> customers = customerRepo.findAll();
-        List<ProductEntity> products = productRepo.findAll();
-        Random random = new Random();
-
-        for (int i = 1; i <= 80; i++) {
-            int daysAgo = random.nextInt(60);
-            LocalDate oDate = LocalDate.now().minusDays(daysAgo);
-            CustomerEntity customer = customers.get(random.nextInt(customers.size()));
-
-            int itemsInOrder = random.nextInt(2) + 1;
-            BigDecimal totalOrderAmount = BigDecimal.ZERO;
-            List<OrderDetailEntity> details = new ArrayList<>();
-
-            for (int j = 0; j < itemsInOrder; j++) {
-                ProductEntity product = products.get(random.nextInt(products.size()));
-                int qty = random.nextInt(3) + 1;
-                BigDecimal lineTotal = product.getPrice().multiply(new BigDecimal(qty));
-                totalOrderAmount = totalOrderAmount.add(lineTotal);
-
-                OrderDetailEntity detail = new OrderDetailEntity();
-                detail.setProduct(product);
-                detail.setQuantity(qty);
-                detail.setUnitPrice(product.getPrice());
-                details.add(detail);
+            // 1. Statuses
+            Map<Long, StatusEntity> statusMap = new HashMap<>();
+            if (data.statuses != null) {
+                if (statusRepo.count() == 0) {
+                    for (StatusDTO dto : data.statuses) {
+                        StatusEntity entity = new StatusEntity();
+                        entity.setStatusName(dto.statusName);
+                        statusRepo.save(entity);
+                        statusMap.put(dto.id, entity);
+                    }
+                } else {
+                    List<StatusEntity> existing = statusRepo.findAll();
+                    for (StatusDTO dto : data.statuses) {
+                        existing.stream()
+                                .filter(e -> e.getStatusName().equals(dto.statusName))
+                                .findFirst()
+                                .ifPresent(e -> statusMap.put(dto.id, e));
+                    }
+                }
             }
 
-            String statusName;
-            if (daysAgo > 20) {
-                statusName = (random.nextInt(10) > 1) ? "จัดส่งแล้ว" : "ยกเลิก/สลิปไม่ถูกต้อง";
-            } else if (daysAgo > 7) {
-                statusName = "กำลังจัดเตรียมสินค้า";
+            // 2. Categories
+            Map<Long, CategoryEntity> categoryMap = new HashMap<>();
+            if (data.categories != null) {
+                if (categoryRepo.count() == 0) {
+                    for (CategoryDTO dto : data.categories) {
+                        CategoryEntity entity = new CategoryEntity();
+                        entity.setCategoryName(dto.categoryName);
+                        categoryRepo.save(entity);
+                        categoryMap.put(dto.id, entity);
+                    }
+                } else {
+                    List<CategoryEntity> existing = categoryRepo.findAll();
+                    for (CategoryDTO dto : data.categories) {
+                        existing.stream()
+                                .filter(e -> e.getCategoryName().equals(dto.categoryName))
+                                .findFirst()
+                                .ifPresent(e -> categoryMap.put(dto.id, e));
+                    }
+                }
+            }
+
+            // 3. Admins
+            Map<Long, AdminEntity> adminMap = new HashMap<>();
+            if (data.admins != null) {
+                if (adminRepo.count() == 0) {
+                    for (AdminDTO dto : data.admins) {
+                        AdminEntity entity = new AdminEntity();
+                        entity.setName(dto.name);
+                        entity.setEmail(dto.email);
+                        entity.setPassword(passwordEncoder.encode(dto.password));
+                        adminRepo.save(entity);
+                        adminMap.put(dto.id, entity);
+                    }
+                } else {
+                    List<AdminEntity> existing = adminRepo.findAll();
+                    for (AdminDTO dto : data.admins) {
+                        existing.stream().filter(e -> e.getEmail().equals(dto.email)).findFirst()
+                                .ifPresent(e -> adminMap.put(dto.id, e));
+                    }
+                }
+            }
+
+            // 4. Staffs
+            Map<Long, StaffEntity> staffMap = new HashMap<>();
+            if (data.staffs != null) {
+                if (staffRepo.count() == 0) {
+                    for (StaffDTO dto : data.staffs) {
+                        StaffEntity entity = new StaffEntity();
+                        entity.setName(dto.name);
+                        entity.setEmail(dto.email);
+                        entity.setPassword(passwordEncoder.encode(dto.password));
+                        entity.setPosition(dto.position);
+                        entity.setStatus(dto.status);
+                        staffRepo.save(entity);
+                        staffMap.put(dto.id, entity);
+                    }
+                } else {
+                    List<StaffEntity> existing = staffRepo.findAll();
+                    for (StaffDTO dto : data.staffs) {
+                        existing.stream().filter(e -> e.getEmail().equals(dto.email)).findFirst()
+                                .ifPresent(e -> staffMap.put(dto.id, e));
+                    }
+                }
+            }
+
+            // 5. Customers
+            Map<Long, CustomerEntity> customerMap = new HashMap<>();
+            if (data.customers != null) {
+                if (customerRepo.count() == 0) {
+                    for (CustomerDTO dto : data.customers) {
+                        CustomerEntity entity = new CustomerEntity();
+                        entity.setCustomerName(dto.customerName);
+                        entity.setEmail(dto.email);
+                        entity.setPassword(passwordEncoder.encode(dto.password));
+                        entity.setPhone(dto.phone);
+                        entity.setAddress(dto.address);
+                        customerRepo.save(entity);
+                        customerMap.put(dto.id, entity);
+                    }
+                } else {
+                    List<CustomerEntity> existing = customerRepo.findAll();
+                    for (CustomerDTO dto : data.customers) {
+                        existing.stream().filter(e -> e.getEmail().equals(dto.email)).findFirst()
+                                .ifPresent(e -> customerMap.put(dto.id, e));
+                    }
+                }
+            }
+
+            // 6. Pets
+            if (data.pets != null && petRepo.count() == 0) {
+                for (PetDTO dto : data.pets) {
+                    PetEntity entity = new PetEntity();
+                    entity.setPetName(dto.petName);
+                    entity.setPetType(dto.petType);
+                    entity.setCongenitalDisease(dto.congenitalDisease);
+                    if (dto.customerId != null && customerMap.containsKey(dto.customerId)) {
+                        entity.setCustomer(customerMap.get(dto.customerId));
+                    }
+                    petRepo.save(entity);
+                }
+            }
+
+            // 7. Products
+            Map<Long, ProductEntity> productMap = new HashMap<>();
+            if (data.products != null) {
+                if (productRepo.count() == 0) {
+                    for (ProductDTO dto : data.products) {
+                        ProductEntity entity = new ProductEntity();
+                        entity.setProductName(dto.productName);
+                        entity.setPrice(dto.price);
+                        entity.setStock(dto.stock);
+                        entity.setDescription(dto.description);
+                        entity.setTargetPetType(dto.targetPetType);
+                        entity.setSuitableForDisease(dto.suitableForDisease);
+
+                        if (dto.categoryId != null)
+                            entity.setCategory(categoryMap.get(dto.categoryId));
+                        if (dto.adminId != null)
+                            entity.setAdmin(adminMap.get(dto.adminId));
+                        else if (!adminMap.isEmpty())
+                            entity.setAdmin(adminMap.values().iterator().next());
+
+                        productRepo.save(entity);
+                        productMap.put(dto.id, entity);
+                    }
+                } else {
+                    List<ProductEntity> existing = productRepo.findAll();
+                    for (ProductDTO dto : data.products) {
+                        existing.stream().filter(e -> e.getProductName().equals(dto.productName)).findFirst()
+                                .ifPresent(e -> productMap.put(dto.id, e));
+                    }
+                }
+            }
+
+            // 8. Orders
+            if (data.orders != null && orderRepo.count() == 0) {
+                for (OrderDTO dto : data.orders) {
+                    OrderEntity entity = new OrderEntity();
+                    entity.setInvoiceNo(dto.invoiceNo);
+                    if (dto.orderDate != null)
+                        entity.setOrderDate(LocalDate.parse(dto.orderDate));
+                    entity.setTotalAmount(dto.totalAmount);
+
+                    if (dto.customerId != null)
+                        entity.setCustomer(customerMap.get(dto.customerId));
+                    if (dto.statusId != null)
+                        entity.setStatus(statusMap.get(dto.statusId));
+                    if (dto.staffId != null)
+                        entity.setStaff(staffMap.get(dto.staffId));
+
+                    orderRepo.save(entity);
+
+                    // Details
+                    if (dto.details != null) {
+                        for (OrderDetailDTO detailDto : dto.details) {
+                            OrderDetailEntity detail = new OrderDetailEntity();
+                            detail.setOrder(entity);
+                            if (detailDto.productId != null)
+                                detail.setProduct(productMap.get(detailDto.productId));
+                            detail.setQuantity(detailDto.quantity);
+                            detail.setUnitPrice(detailDto.unitPrice);
+                            orderDetailRepo.save(detail);
+                        }
+                    }
+
+                    // Payments
+                    if (dto.payments != null) {
+                        for (PaymentDTO paymentDto : dto.payments) {
+                            PaymentEntity payment = new PaymentEntity();
+                            payment.setOrder(entity);
+                            payment.setAmount(paymentDto.amount);
+                            payment.setMethod(paymentDto.method);
+                            if (paymentDto.paymentDate != null) {
+                                try {
+                                    payment.setPaymentDate(LocalDateTime.parse(paymentDto.paymentDate));
+                                } catch (Exception e) {
+                                }
+                            }
+                            payment.setSlipImage(paymentDto.slipImage);
+                            paymentRepo.save(payment);
+                        }
+                    }
+
+                    // Cancellation
+                    if (dto.cancellation != null) {
+                        CancelOrderEntity cancel = new CancelOrderEntity();
+                        cancel.setOrder(entity);
+                        cancel.setReason(dto.cancellation.reason);
+                        if (dto.cancellation.cancelDate != null)
+                            cancel.setCancelDate(LocalDateTime.parse(dto.cancellation.cancelDate));
+                        if (dto.cancellation.staffId != null)
+                            cancel.setStaff(staffMap.get(dto.cancellation.staffId));
+                        cancelOrderRepo.save(cancel);
+                    }
+                }
+
+                System.out.println(">>> [SUCCESS] Orders have been restored/initialized.");
             } else {
-                statusName = statusNames[random.nextInt(3)];
-            }
-            OrderEntity order = new OrderEntity();
-            order.setCustomer(customer);
-            order.setOrderDate(oDate);
-            order.setTotalAmount(totalOrderAmount);
-            order.setStatus(statusRepo.findByStatusName(statusName));
-            order.setStaff(statusName.contains("จัด") ? staff1 : null);
-            order.setInvoiceNo("INV-" + oDate.getYear() + String.format("%02d%04d", oDate.getMonthValue(), i));
-            orderRepo.save(order);
-
-            for (OrderDetailEntity d : details) {
-                d.setOrder(order);
-                orderDetailRepo.save(d);
+                System.out.println(">>> Orders already exist. Skipping order initialization.");
             }
 
-            if (!statusName.equals("รอชำระเงิน")) {
-                savePayment(order, totalOrderAmount, oDate, random);
-            }
-
-            if (statusName.equals("ยกเลิก/สลิปไม่ถูกต้อง")) {
-                saveCancelOrder(order, daysAgo, staff2);
-            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println(">>> [ERROR] Failed to load data from mock_data.json: " + e.getMessage());
         }
-        System.out.println(">>> [SUCCESS] Mock Data Initialized: 20 Products, 10 Customers, 80 Orders.");
     }
 
-    private void savePayment(OrderEntity order, BigDecimal amount, LocalDate date, Random r) {
-        PaymentEntity p = new PaymentEntity();
-        p.setOrder(order);
-        p.setAmount(amount);
-        p.setMethod("โอนเงิน");
-        p.setPaymentDate(date.atTime(r.nextInt(23), r.nextInt(59)));
-        paymentRepo.save(p);
+    // Helper to check if entity exists (simplified for this context)
+    // In a real app, you might want more robust checks, but for mock data, IDs or
+    // Names suffice.
+
+    // --- DTO Classes for JSON Mapping ---
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    private static class MockDataRoot {
+        public List<StatusDTO> statuses;
+        public List<CategoryDTO> categories;
+        public List<AdminDTO> admins;
+        public List<StaffDTO> staffs;
+        public List<CustomerDTO> customers;
+        public List<PetDTO> pets;
+        public List<ProductDTO> products;
+        public List<OrderDTO> orders;
     }
 
-    private void saveCancelOrder(OrderEntity order, int daysAgo, StaffEntity staff) {
-        CancelOrderEntity cancel = new CancelOrderEntity();
-        cancel.setOrder(order);
-        cancel.setReason("ข้อมูลการโอนเงินไม่ชัดเจน");
-        cancel.setCancelDate(LocalDateTime.now().minusDays(daysAgo));
-        cancel.setStaff(staff);
-        cancelOrderRepo.save(cancel);
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    static class StatusDTO {
+        public Long id;
+        public String statusName;
     }
 
-    private void saveProduct(String name, BigDecimal price, int stock, String desc, CategoryEntity cat,
-            AdminEntity admin) {
-        ProductEntity p = new ProductEntity();
-        p.setProductName(name);
-        p.setPrice(price);
-        p.setStock(stock);
-        p.setDescription(desc);
-        p.setCategory(cat);
-        p.setAdmin(admin);
-        productRepo.save(p);
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    static class CategoryDTO {
+        public Long id;
+        public String categoryName;
     }
 
-    private void saveCustomer(String name, String email, String pass, String phone, String addr) {
-        CustomerEntity c = new CustomerEntity();
-        c.setCustomerName(name);
-        c.setEmail(email);
-        c.setPassword(pass);
-        c.setPhone(phone);
-        c.setAddress(addr);
-        customerRepo.save(c);
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    static class AdminDTO {
+        public Long id;
+        public String name;
+        public String email;
+        public String password;
     }
 
-    private StaffEntity saveStaff(String name, String email, String pass) {
-        StaffEntity s = new StaffEntity();
-        s.setName(name);
-        s.setEmail(email);
-        s.setPassword(pass);
-        return staffRepo.save(s);
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    static class StaffDTO {
+        public Long id;
+        public String name;
+        public String email;
+        public String password;
+        public String position;
+        public String status;
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    static class CustomerDTO {
+        public Long id;
+        public String customerName;
+        public String email;
+        public String password;
+        public String phone;
+        public String address;
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    static class PetDTO {
+        public Long petId;
+        public String petName;
+        public String petType;
+        public String congenitalDisease;
+        public Long customerId;
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    static class ProductDTO {
+        public Long id;
+        public String productName;
+        public BigDecimal price;
+        public Integer stock;
+        public String description;
+        public Long categoryId;
+        public String targetPetType;
+        public String suitableForDisease;
+        public Long adminId;
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    static class OrderDTO {
+        public Long id;
+        public String invoiceNo;
+        public String orderDate;
+        public BigDecimal totalAmount;
+        public Long customerId;
+        public Long statusId;
+        public Long staffId;
+        public List<OrderDetailDTO> details;
+        public List<PaymentDTO> payments;
+        public CancellationDTO cancellation;
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    static class OrderDetailDTO {
+        public Long productId;
+        public Integer quantity;
+        public BigDecimal unitPrice;
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    static class PaymentDTO {
+        public BigDecimal amount;
+        public String method;
+        public String paymentDate;
+        public String slipImage;
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    static class CancellationDTO {
+        public String reason;
+        public String cancelDate;
+        public Long staffId;
     }
 }

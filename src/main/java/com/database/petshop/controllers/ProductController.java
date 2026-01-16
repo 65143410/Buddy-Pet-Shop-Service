@@ -77,4 +77,11 @@ public class ProductController {
     public ResponseEntity<List<ProductLog>> getLogsByProduct(@PathVariable Long productId) {
         return ResponseEntity.ok(productService.getProductLogsById(productId));
     }
+
+    @GetMapping("/recommend")
+    public ResponseEntity<List<ProductEntity>> getRecommendedProducts(
+            @RequestParam String type,
+            @RequestParam(required = false) String disease) {
+        return ResponseEntity.ok(productService.getRecommendedProducts(type, disease));
+    }
 }

@@ -39,6 +39,9 @@ public class ProductEntity implements Serializable {
     @Column(name = "Description")
     private String description;
 
+    @Column(name = "Image")
+    private String image;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "Category_ID", nullable = false)
     @JsonIgnoreProperties("products")
@@ -97,6 +100,14 @@ public class ProductEntity implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public CategoryEntity getCategory() {

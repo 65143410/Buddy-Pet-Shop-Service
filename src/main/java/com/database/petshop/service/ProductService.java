@@ -149,4 +149,10 @@ public class ProductService {
 
         productRepo.delete(product);
     }
+
+    public List<ProductEntity> getRecommendedProducts(String petType, String disease) {
+        // User requested to show ALL products for the pet type, regardless of disease.
+        // Returning all products matching the pet type.
+        return productRepo.findByTargetPetTypeContainingIgnoreCaseOrTargetPetTypeIgnoreCase(petType, "ALL");
+    }
 }
