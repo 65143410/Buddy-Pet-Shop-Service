@@ -68,7 +68,7 @@ public class OrderService {
             throw new RuntimeException("ไม่สามารถสร้างออเดอร์ได้: กรุณาระบุข้อมูลลูกค้า");
         }
         // ... (omitting repeated validation for brevity, assuming standard flow)
-        
+
         order.setOrderDate(LocalDate.now());
         order.setTotalAmount(BigDecimal.ZERO);
 
@@ -105,7 +105,7 @@ public class OrderService {
         }
 
         savedOrder.setTotalAmount(calculatedTotal);
-        
+
         // Save Payment/Slip Logic
         if (slipImageUrl != null) {
             PaymentEntity payment = new PaymentEntity();
@@ -119,8 +119,9 @@ public class OrderService {
 
         return orderRepo.save(savedOrder);
     }
-    
-    // Keep original method for backward compatibility if needed, but it's better to refactor
+
+    // Keep original method for backward compatibility if needed, but it's better to
+    // refactor
     public OrderEntity createOrder(OrderEntity order, List<OrderDetailEntity> details) {
         return createOrderWithSlip(order, details, null);
     }
@@ -287,5 +288,35 @@ public class OrderService {
 
         }
         return orders;
+    }
+
+    public List<Map<String, Object>> getMonthlySalesReport() {
+        List<Object[]> results = orderRepo.findMonthlySales();
+        return results.stream().map(row -> {
+            Map<String, Object> map = new HashMap<>();
+            map.put("month", row[0]); // YYYY-MM
+            map.put("totalSales", row[1]); // Sum(TotalAmount)
+            return map;
+        }).collect(Collectors.toList());
+    }
+
+    public List<Map<String, Object>> getWeeklyOrderStats() {
+        List<Object[]> results = orderRepo.findWeeklyOrderStats();
+        return results.stream().map(row -> {
+            Map<String, Object> map = new HashMap<>();
+            map.put("date", row[0]);
+            map.put("count", row[1]);
+            return map;
+        }).collect(Collectors.toList());
+    }
+
+    public List<Map<String, Object>> getDailyRevenueStats() {
+        List<Object[]> results = orderRepo.findDailyRevenueStats();
+        return results.stream().map(row -> {
+            Map<String, Object> map = new HashMap<>();
+            map.put("date", row[0]);
+            map.put("revenue", row[1]);
+            return map;
+        }).collect(Collectors.toList());
     }
 }

@@ -104,6 +104,21 @@ public class OrderController {
         return ResponseEntity.ok(orderService.getTopSellingProducts(5));
     }
 
+    @GetMapping("/report/monthly-sales")
+    public ResponseEntity<List<Map<String, Object>>> getMonthlySalesReport() {
+        return ResponseEntity.ok(orderService.getMonthlySalesReport());
+    }
+
+    @GetMapping("/report/weekly-orders")
+    public ResponseEntity<List<Map<String, Object>>> getWeeklyOrderStats() {
+        return ResponseEntity.ok(orderService.getWeeklyOrderStats());
+    }
+
+    @GetMapping("/report/daily-revenue")
+    public ResponseEntity<List<Map<String, Object>>> getDailyRevenueStats() {
+        return ResponseEntity.ok(orderService.getDailyRevenueStats());
+    }
+
     @GetMapping("/search")
     public ResponseEntity<List<OrderEntity>> searchByCustomer(@RequestParam String customerName) {
         return ResponseEntity.ok(orderService.searchOrdersByCustomer(customerName));
