@@ -69,14 +69,15 @@ public class DataInitializer implements CommandLineRunner {
             return;
         }
 
-        String[] statusNames = {"รอชำระเงิน", "รอตรวจสอบยอดเงิน", "ชำระเงินแล้ว", "กำลังจัดเตรียมสินค้า", "จัดส่งแล้ว", "ยกเลิก/สลิปไม่ถูกต้อง"};
+        String[] statusNames = { "รอชำระเงิน", "รอตรวจสอบยอดเงิน", "ชำระเงินแล้ว", "กำลังจัดเตรียมสินค้า", "จัดส่งแล้ว",
+                "ยกเลิก/สลิปไม่ถูกต้อง" };
         for (String name : statusNames) {
             StatusEntity s = new StatusEntity();
             s.setStatusName(name);
             statusRepo.save(s);
         }
 
-        String[] catNames = {"อาหารสัตว์", "อุปกรณ์และของใช้", "ของเล่นสัตว์เลี้ยง", "ยาและเวชภัณฑ์"};
+        String[] catNames = { "อาหารสัตว์", "อุปกรณ์และของใช้", "ของเล่นสัตว์เลี้ยง", "ยาและเวชภัณฑ์" };
         for (String name : catNames) {
             CategoryEntity cat = new CategoryEntity();
             cat.setCategoryName(name);
@@ -209,7 +210,8 @@ public class DataInitializer implements CommandLineRunner {
         cancelOrderRepo.save(cancel);
     }
 
-    private void saveProduct(String name, BigDecimal price, int stock, String desc, CategoryEntity cat, AdminEntity admin) {
+    private void saveProduct(String name, BigDecimal price, int stock, String desc, CategoryEntity cat,
+            AdminEntity admin) {
         ProductEntity p = new ProductEntity();
         p.setProductName(name);
         p.setPrice(price);

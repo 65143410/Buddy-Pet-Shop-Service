@@ -23,7 +23,7 @@ public class PetEntity {
     @Column(name = "Pet_name", nullable = false)
     private String petName;
 
-    @Column(name = "Pet_type") // เช่น DOG, CAT, BIRD
+    @Column(name = "Pet_type") 
     private String petType;
 
     @Column(name = "Congenital_disease") // โรคประจำตัว
