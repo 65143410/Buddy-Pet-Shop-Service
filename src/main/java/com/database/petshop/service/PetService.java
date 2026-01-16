@@ -37,6 +37,25 @@ public class PetService {
         return petRepo.save(pet);
     }
 
+    public PetEntity updatePet(Long id, com.database.petshop.dto.PetRequestDTO dto) {
+        PetEntity pet = petRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("ไม่พบสัตว์เลี้ยง ID: " + id));
+
+        pet.setPetName(dto.getPetName());
+        pet.setPetType(dto.getPetType());
+        pet.setCongenitalDisease(dto.getCongenitalDisease());
+        pet.setBirthdate(dto.getBirthdate());
+        pet.setWeight(dto.getWeight());
+        pet.setGender(dto.getGender());
+        pet.setBreed(dto.getBreed());
+        pet.setImage(dto.getImage());
+        pet.setIsSterilized(dto.getIsSterilized());
+        // Note: Usually we don't change the owner (customer) during a simple update, so
+        // we skip that unless needed.
+
+        return petRepo.save(pet);
+    }
+
     public PetEntity savePet(PetEntity pet) {
         return petRepo.save(pet);
     }

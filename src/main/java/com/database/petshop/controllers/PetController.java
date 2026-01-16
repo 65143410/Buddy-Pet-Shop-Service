@@ -28,6 +28,12 @@ public class PetController {
         return petService.createPet(petDto);
     }
 
+    @org.springframework.web.bind.annotation.PutMapping("/update/{id}")
+    public PetEntity updatePet(@PathVariable Long id,
+            @jakarta.validation.Valid @RequestBody com.database.petshop.dto.PetRequestDTO petDto) {
+        return petService.updatePet(id, petDto);
+    }
+
     @GetMapping("/customer/{customerId}")
     public List<PetEntity> getPetsByCustomer(@PathVariable Long customerId) {
         return petService.getPetsByCustomerId(customerId);

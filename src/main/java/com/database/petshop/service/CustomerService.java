@@ -50,6 +50,7 @@ public class CustomerService {
             existing.setEmail(details.getEmail());
             existing.setPhone(details.getPhone());
             existing.setAddress(details.getAddress());
+            existing.setImage(details.getImage());
             if (details.getPassword() != null && !details.getPassword().isEmpty()) {
                 existing.setPassword(passwordEncoder.encode(details.getPassword()));
             }
