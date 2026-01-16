@@ -39,7 +39,7 @@ public class ProductEntity implements Serializable {
     @Column(name = "Description")
     private String description;
 
-    @Column(name = "Image")
+    @Column(name = "Image", columnDefinition = "TEXT")
     private String image;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -148,6 +148,39 @@ public class ProductEntity implements Serializable {
 
     public void setSuitableForDisease(String suitableForDisease) {
         this.suitableForDisease = suitableForDisease;
+    }
+
+    @Column(name = "Is_Active")
+    private Boolean isActive = true;
+
+    @Column(name = "Brand")
+    private String brand;
+
+    @Column(name = "Weight_Volume")
+    private String weightVolume;
+
+    public Boolean getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(Boolean isActive) {
+        this.isActive = isActive;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
+
+    public String getWeightVolume() {
+        return weightVolume;
+    }
+
+    public void setWeightVolume(String weightVolume) {
+        this.weightVolume = weightVolume;
     }
 
 }

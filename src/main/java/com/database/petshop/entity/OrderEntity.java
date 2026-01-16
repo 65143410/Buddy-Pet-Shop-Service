@@ -37,26 +37,26 @@ public class OrderEntity implements Serializable {
     private CustomerEntity customer;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "Staff_ID") 
+    @JoinColumn(name = "Staff_ID")
     private StaffEntity staff;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "Status_ID", nullable = false)
     private StatusEntity status;
-    
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<OrderDetailEntity> orderDetails = new ArrayList<>();
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<PaymentEntity> payments;
 
-    @Column(name = "Invoice_No", unique = true) 
+    @Column(name = "Invoice_No", unique = true)
     private String invoiceNo;
-    
+
     public CustomerEntity getCustomer() {
         return customer;
     }
-    
+
     public void setCustomer(CustomerEntity customer) {
         this.customer = customer;
     }
@@ -64,7 +64,7 @@ public class OrderEntity implements Serializable {
     public LocalDate getOrderDate() {
         return orderDate;
     }
-    
+
     public void setOrderDate(LocalDate orderDate) {
         this.orderDate = orderDate;
     }
@@ -72,7 +72,7 @@ public class OrderEntity implements Serializable {
     public Long getOrderId() {
         return orderId;
     }
-    
+
     public void setOrderId(Long orderId) {
         this.orderId = orderId;
     }
@@ -125,5 +125,37 @@ public class OrderEntity implements Serializable {
         this.invoiceNo = invoiceNo;
     }
 
-    
+    @Column(name = "Shipping_Address")
+    private String shippingAddress;
+
+    @Column(name = "Tracking_Number")
+    private String trackingNumber;
+
+    @Column(name = "Shipping_Cost")
+    private BigDecimal shippingCost;
+
+    public String getShippingAddress() {
+        return shippingAddress;
+    }
+
+    public void setShippingAddress(String shippingAddress) {
+        this.shippingAddress = shippingAddress;
+    }
+
+    public String getTrackingNumber() {
+        return trackingNumber;
+    }
+
+    public void setTrackingNumber(String trackingNumber) {
+        this.trackingNumber = trackingNumber;
+    }
+
+    public BigDecimal getShippingCost() {
+        return shippingCost;
+    }
+
+    public void setShippingCost(BigDecimal shippingCost) {
+        this.shippingCost = shippingCost;
+    }
+
 }

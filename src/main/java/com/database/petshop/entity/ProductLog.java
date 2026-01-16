@@ -115,11 +115,33 @@ public class ProductLog {
         this.notes = notes;
     }
 
+    @Column(name = "Staff_ID")
+    private Long staffId;
+
+    @Column(name = "Admin_ID")
+    private Long adminId;
+
     public LocalDateTime getTimestamp() {
         return timestamp;
     }
 
     public void setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public Long getStaffId() {
+        return staffId;
+    }
+
+    public void setStaffId(Long staffId) {
+        this.staffId = staffId;
+    }
+
+    public Long getAdminId() {
+        return adminId;
+    }
+
+    public void setAdminId(Long adminId) {
+        this.adminId = adminId;
     }
 }

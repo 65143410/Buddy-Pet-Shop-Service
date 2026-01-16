@@ -25,6 +25,13 @@ public class PetService {
         pet.setPetName(dto.getPetName());
         pet.setPetType(dto.getPetType());
         pet.setCongenitalDisease(dto.getCongenitalDisease());
+
+        pet.setBirthdate(dto.getBirthdate());
+        pet.setWeight(dto.getWeight());
+        pet.setGender(dto.getGender());
+        pet.setBreed(dto.getBreed());
+        pet.setImage(dto.getImage());
+        pet.setIsSterilized(dto.getIsSterilized());
         pet.setCustomer(customer);
 
         return petRepo.save(pet);

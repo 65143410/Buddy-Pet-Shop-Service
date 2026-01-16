@@ -1,0 +1,172 @@
+[
+    {
+        "cancelId": 1,
+        "cancelDate": "2025-11-18T04:39:35",
+        "reason": "Payment failed timeout",
+        "order": {
+            "orderId": 2
+        },
+        "staff": null
+    },
+    {
+        "cancelId": 2,
+        "cancelDate": "2025-11-20T01:07:35",
+        "reason": "Payment failed timeout",
+        "order": {
+            "orderId": 3
+        },
+        "staff": null
+    },
+    {
+        "cancelId": 3,
+        "cancelDate": "2025-12-01T15:10:35",
+        "reason": "Payment failed timeout",
+        "order": {
+            "orderId": 27
+        },
+        "staff": {
+            "id": 1
+        }
+    },
+    {
+        "cancelId": 4,
+        "cancelDate": "2025-12-07T04:32:35",
+        "reason": "Payment failed timeout",
+        "order": {
+            "orderId": 51
+        },
+        "staff": {
+            "id": 1
+        }
+    },
+    {
+        "cancelId": 5,
+        "cancelDate": "2025-12-11T14:14:35",
+        "reason": "Found cheaper",
+        "order": {
+            "orderId": 70
+        },
+        "staff": {
+            "id": 2
+        }
+    },
+    {
+        "cancelId": 6,
+        "cancelDate": "2025-12-14T02:35:35",
+        "reason": "Payment failed timeout",
+        "order": {
+            "orderId": 75
+        },
+        "staff": {
+            "id": 1
+        }
+    },
+    {
+        "cancelId": 7,
+        "cancelDate": "2025-12-20T22:16:35",
+        "reason": "Payment failed timeout",
+        "order": {
+            "orderId": 91
+        },
+        "staff": {
+            "id": 2
+        }
+    },
+    {
+        "cancelId": 8,
+        "cancelDate": "2025-12-22T01:39:35",
+        "reason": "Found cheaper",
+        "order": {
+            "orderId": 93
+        },
+        "staff": {
+            "id": 1
+        }
+    },
+    {
+        "cancelId": 9,
+        "cancelDate": "2025-12-24T11:40:35",
+        "reason": "Found cheaper",
+        "order": {
+            "orderId": 95
+        },
+        "staff": {
+            "id": 1
+        }
+    },
+    {
+        "cancelId": 10,
+        "cancelDate": "2025-12-25T22:08:35",
+        "reason": "Found cheaper",
+        "order": {
+            "orderId": 97
+        },
+        "staff": {
+            "id": 2
+        }
+    },
+    {
+        "cancelId": 11,
+        "cancelDate": "2026-01-01T23:28:35",
+        "reason": "Payment failed timeout",
+        "order": {
+            "orderId": 125
+        },
+        "staff": {
+            "id": 2
+        }
+    },
+    {
+        "cancelId": 12,
+        "cancelDate": "2026-01-12T14:03:35",
+        "reason": "Changed mind",
+        "order": {
+            "orderId": 156
+        },
+        "staff": {
+            "id": 1
+        }
+    },
+    {
+        "cancelId": 13,
+        "cancelDate": "2026-01-13T01:14:35",
+        "reason": "Payment failed timeout",
+        "order": {
+            "orderId": 158
+        },
+        "staff": {
+            "id": 1
+        }
+    },
+    {
+        "cancelId": 14,
+        "cancelDate": "2026-01-15T23:29:35",
+        "reason": "Payment failed timeout",
+        "order": {
+            "orderId": 168
+        },
+        "staff": {
+            "id": 1
+        }
+    },
+    {
+        "cancelId": 15,
+        "cancelDate": "2026-01-17T04:38:35",
+        "reason": "Found cheaper",
+        "order": {
+            "orderId": 171
+        },
+        "staff": null
+    },
+    {
+        "cancelId": 16,
+        "cancelDate": "2026-01-16T21:14:35",
+        "reason": "Changed mind",
+        "order": {
+            "orderId": 172
+        },
+        "staff": {
+            "id": 2
+        }
+    }
+]

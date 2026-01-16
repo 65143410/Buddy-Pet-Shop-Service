@@ -54,5 +54,15 @@ public class CategoryEntity implements Serializable {
         this.products = products;
     }
 
-    
+    @Column(name = "Description")
+    private String description;
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
 }

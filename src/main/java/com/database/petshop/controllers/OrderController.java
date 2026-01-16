@@ -165,4 +165,19 @@ public class OrderController {
 
         return ResponseEntity.ok(customerRepo.save(customer));
     }
+
+    @PutMapping("/{id}/shipping-info")
+    public ResponseEntity<OrderEntity> updateShippingInfo(@PathVariable Long id,
+            @RequestBody Map<String, Object> payload) {
+        String trackingNumber = (String) payload.get("trackingNumber");
+        Object shippingCostObj = payload.get("shippingCost");
+        java.math.BigDecimal shippingCost = null;
+
+        if (shippingCostObj != null) {
+            shippingCost = new java.math.BigDecimal(shippingCostObj.toString());
+        }
+
+        OrderEntity updatedOrder = orderService.updateShippingInfo(id, trackingNumber, shippingCost);
+        return ResponseEntity.ok(updatedOrder);
+    }
 }

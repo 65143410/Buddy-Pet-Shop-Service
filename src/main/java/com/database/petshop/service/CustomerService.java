@@ -79,6 +79,7 @@ public class CustomerService {
         customer.setPassword(passwordEncoder.encode(request.getPassword()));
         customer.setPhone(request.getPhone());
         customer.setAddress(request.getAddress());
+        customer.setImage(request.getImage());
 
         CustomerEntity savedCustomer = customerRepo.save(customer);
 
@@ -88,6 +89,14 @@ public class CustomerService {
             pet.setPetName(request.getPetName());
             pet.setPetType(request.getPetType());
             pet.setCongenitalDisease(request.getCongenitalDisease());
+
+            pet.setBirthdate(request.getPetBirthdate());
+            pet.setWeight(request.getPetWeight());
+            pet.setGender(request.getPetGender());
+            pet.setBreed(request.getPetBreed());
+            pet.setImage(request.getPetImage());
+            pet.setIsSterilized(request.getPetIsSterilized());
+
             pet.setCustomer(savedCustomer);
             petRepo.save(pet);
         }

@@ -48,4 +48,59 @@ public class PetRequestDTO {
     public void setCustomerId(Long customerId) {
         this.customerId = customerId;
     }
+
+    private java.time.LocalDate birthdate;
+    private Double weight;
+    private String gender;
+    private String breed;
+    private String image;
+    private Boolean isSterilized;
+
+    public java.time.LocalDate getBirthdate() {
+        return birthdate;
+    }
+
+    public void setBirthdate(java.time.LocalDate birthdate) {
+        this.birthdate = birthdate;
+    }
+
+    public Double getWeight() {
+        return weight;
+    }
+
+    public void setWeight(Double weight) {
+        this.weight = weight;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public String getBreed() {
+        return breed;
+    }
+
+    public void setBreed(String breed) {
+        this.breed = breed;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public Boolean getIsSterilized() {
+        return isSterilized;
+    }
+
+    public void setIsSterilized(Boolean isSterilized) {
+        this.isSterilized = isSterilized;
+    }
 }

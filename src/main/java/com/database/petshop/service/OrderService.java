@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.database.petshop.entity.CustomerEntity;
 import com.database.petshop.entity.OrderDetailEntity;
 import com.database.petshop.entity.OrderEntity;
 import com.database.petshop.entity.PaymentEntity;
@@ -67,10 +68,21 @@ public class OrderService {
         if (order.getCustomer() == null || order.getCustomer().getCustomerId() == null) {
             throw new RuntimeException("ไม่สามารถสร้างออเดอร์ได้: กรุณาระบุข้อมูลลูกค้า");
         }
-        // ... (omitting repeated validation for brevity, assuming standard flow)
+
+        CustomerEntity fullCustomer = customerRepo.findById(order.getCustomer().getCustomerId())
+                .orElseThrow(
+                        () -> new RuntimeException("ไม่พบข้อมูลลูกค้า ID: " + order.getCustomer().getCustomerId()));
+        order.setCustomer(fullCustomer);
 
         order.setOrderDate(LocalDate.now());
         order.setTotalAmount(BigDecimal.ZERO);
+
+        // Snapshot Shipping Address
+        if (order.getShippingAddress() == null || order.getShippingAddress().isEmpty()) {
+            if (fullCustomer.getAddress() != null) {
+                order.setShippingAddress(fullCustomer.getAddress());
+            }
+        }
 
         // Set status to "Wait for Check" (2) if slip is present
         if (order.getStatus() == null) {
@@ -130,6 +142,8 @@ public class OrderService {
     public OrderEntity acceptOrder(Long orderId, Long staffId) {
         OrderEntity order = orderRepo.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("ไม่พบออเดอร์ ID: " + orderId));
+
+        // Allowed to accept if Paid (3)
         if (!order.getStatus().getStatusName().equals("ชำระเงินแล้ว")) {
             throw new RuntimeException("ไม่สามารถรับออเดอร์นี้ได้ เนื่องจากยังไม่ชำระเงินหรือรอตรวจสอบ");
         }
@@ -139,6 +153,19 @@ public class OrderService {
 
         order.setStaff(staff);
         order.setStatus(statusRepo.findByStatusName("กำลังจัดเตรียมสินค้า"));
+
+        return orderRepo.save(order);
+    }
+
+    @Transactional
+    public OrderEntity updateShippingInfo(Long orderId, String trackingNumber, BigDecimal shippingCost) {
+        OrderEntity order = orderRepo.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("ไม่พบออเดอร์ ID: " + orderId));
+
+        if (trackingNumber != null)
+            order.setTrackingNumber(trackingNumber);
+        if (shippingCost != null)
+            order.setShippingCost(shippingCost);
 
         return orderRepo.save(order);
     }

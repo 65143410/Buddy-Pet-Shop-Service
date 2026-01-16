@@ -92,4 +92,68 @@ public class RegisterRequest {
     public void setCongenitalDisease(String congenitalDisease) {
         this.congenitalDisease = congenitalDisease;
     }
+
+    private String image;
+    private java.time.LocalDate petBirthdate;
+    private Double petWeight;
+    private String petGender;
+    private String petBreed;
+    private String petImage;
+    private Boolean petIsSterilized;
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public java.time.LocalDate getPetBirthdate() {
+        return petBirthdate;
+    }
+
+    public void setPetBirthdate(java.time.LocalDate petBirthdate) {
+        this.petBirthdate = petBirthdate;
+    }
+
+    public Double getPetWeight() {
+        return petWeight;
+    }
+
+    public void setPetWeight(Double petWeight) {
+        this.petWeight = petWeight;
+    }
+
+    public String getPetGender() {
+        return petGender;
+    }
+
+    public void setPetGender(String petGender) {
+        this.petGender = petGender;
+    }
+
+    public String getPetBreed() {
+        return petBreed;
+    }
+
+    public void setPetBreed(String petBreed) {
+        this.petBreed = petBreed;
+    }
+
+    public String getPetImage() {
+        return petImage;
+    }
+
+    public void setPetImage(String petImage) {
+        this.petImage = petImage;
+    }
+
+    public Boolean getPetIsSterilized() {
+        return petIsSterilized;
+    }
+
+    public void setPetIsSterilized(Boolean petIsSterilized) {
+        this.petIsSterilized = petIsSterilized;
+    }
 }

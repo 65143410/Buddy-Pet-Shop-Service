@@ -89,9 +89,10 @@ public class AdminService {
 
         long staffCount = staffRepo.count();
 
-        stats.add(Map.of("label", "คำสั่งซื้อทั้งหมด", "value", orderCount, "icon", "pi pi-shopping-cart"));
-        stats.add(Map.of("label", "รายได้รวม", "value", totalRevenue, "icon", "pi pi-money-bill"));
-        stats.add(Map.of("label", "พนักงานทั้งหมด", "value", staffCount, "icon", "pi pi-users"));
+        stats.add(Map.<String, Object>of("label", "คำสั่งซื้อทั้งหมด", "value", orderCount, "icon",
+                "pi pi-shopping-cart"));
+        stats.add(Map.<String, Object>of("label", "รายได้รวม", "value", totalRevenue, "icon", "pi pi-money-bill"));
+        stats.add(Map.<String, Object>of("label", "พนักงานทั้งหมด", "value", staffCount, "icon", "pi pi-users"));
 
         return stats;
     }
