@@ -180,4 +180,26 @@ public class OrderController {
         OrderEntity updatedOrder = orderService.updateShippingInfo(id, trackingNumber, shippingCost);
         return ResponseEntity.ok(updatedOrder);
     }
+
+    @PostMapping("/{id}/payment")
+    public ResponseEntity<?> submitPayment(@PathVariable Long id, @RequestBody Map<String, Object> payload) {
+        String slipImage = (String) payload.get("slipImage");
+        Object amountObj = payload.get("amount");
+        java.math.BigDecimal amount = null;
+
+        if (amountObj != null) {
+            amount = new java.math.BigDecimal(amountObj.toString());
+        }
+
+        if (slipImage == null || slipImage.isEmpty()) {
+            return ResponseEntity.badRequest().body("กรุณาอัปโหลดสลิป");
+        }
+
+        try {
+            orderService.submitPayment(id, slipImage, amount);
+            return ResponseEntity.ok(Map.of("message", "แจ้งชำระเงินเรียบร้อย"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("เกิดข้อผิดพลาด: " + e.getMessage());
+        }
+    }
 }
