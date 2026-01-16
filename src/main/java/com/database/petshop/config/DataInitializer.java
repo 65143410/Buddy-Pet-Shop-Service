@@ -137,6 +137,7 @@ public class DataInitializer implements CommandLineRunner {
                         entity.setName(dto.name);
                         entity.setEmail(dto.email);
                         entity.setPassword(passwordEncoder.encode(dto.password));
+                        entity.setPhone(dto.phone);
                         adminRepo.save(entity);
                         adminMap.put(dto.id, entity);
                     }
@@ -160,6 +161,7 @@ public class DataInitializer implements CommandLineRunner {
                         entity.setPassword(passwordEncoder.encode(dto.password));
                         entity.setPosition(dto.position);
                         entity.setStatus(dto.status);
+                        entity.setPhone(dto.phone);
                         staffRepo.save(entity);
                         staffMap.put(dto.id, entity);
                     }
@@ -350,6 +352,7 @@ public class DataInitializer implements CommandLineRunner {
         public String name;
         public String email;
         public String password;
+        public String phone;
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -360,6 +363,7 @@ public class DataInitializer implements CommandLineRunner {
         public String password;
         public String position;
         public String status;
+        public String phone;
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)

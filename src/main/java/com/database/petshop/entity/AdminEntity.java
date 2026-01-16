@@ -32,8 +32,11 @@ public class AdminEntity implements Serializable {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
-    @OneToMany(mappedBy = "admin") 
+    @OneToMany(mappedBy = "admin")
     private List<ProductEntity> products;
+
+    @Column(name = "Phone")
+    private String phone;
 
     public Long getAdminId() {
         return adminId;
@@ -49,6 +52,14 @@ public class AdminEntity implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public String getEmail() {
@@ -75,5 +86,4 @@ public class AdminEntity implements Serializable {
         this.products = products;
     }
 
-    
 }

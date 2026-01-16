@@ -44,6 +44,9 @@ public class StaffEntity implements Serializable {
     @Column(name = "position")
     private String position;
 
+    @Column(name = "Phone")
+    private String phone;
+
     public Long getStaffId() {
         return staffId;
     }
@@ -58,6 +61,14 @@ public class StaffEntity implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public String getEmail() {

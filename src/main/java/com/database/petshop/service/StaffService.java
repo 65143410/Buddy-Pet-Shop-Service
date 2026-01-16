@@ -47,6 +47,7 @@ public class StaffService {
             existing.setEmail(details.getEmail());
             existing.setPassword(details.getPassword());
             existing.setPosition(details.getPosition());
+            existing.setPhone(details.getPhone());
             return staffRepo.save(existing);
         }
         return null;
