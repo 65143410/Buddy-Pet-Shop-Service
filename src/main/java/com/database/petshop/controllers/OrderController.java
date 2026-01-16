@@ -48,7 +48,7 @@ public class OrderController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createOrder(@Valid @RequestBody OrderRequestDTO request) {
+    public ResponseEntity<?> createOrder(@RequestBody OrderRequestDTO request) {
         try {
             // Create Order with Slip (Base64 string passed directly)
             OrderEntity order = orderService.createOrderWithSlip(request.getOrder(), request.getDetails(),
