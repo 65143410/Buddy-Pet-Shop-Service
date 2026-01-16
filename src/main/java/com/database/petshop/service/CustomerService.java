@@ -85,19 +85,36 @@ public class CustomerService {
         CustomerEntity savedCustomer = customerRepo.save(customer);
 
         // 3. ถ้ามีข้อมูลสัตว์เลี้ยง ให้บันทึกด้วย
-        if (request.getPetName() != null && !request.getPetName().isEmpty()) {
+        // 3. บันทึกข้อมูลสัตว์เลี้ยง (รองรับหลายตัว)
+        if (request.getPets() != null && !request.getPets().isEmpty()) {
+            for (com.database.petshop.dto.RegisterRequest.PetInfo petInfo : request.getPets()) {
+                if (petInfo.getPetName() != null && !petInfo.getPetName().isEmpty()) {
+                    com.database.petshop.entity.PetEntity pet = new com.database.petshop.entity.PetEntity();
+                    pet.setPetName(petInfo.getPetName());
+                    pet.setPetType(petInfo.getPetType());
+                    pet.setCongenitalDisease(petInfo.getCongenitalDisease());
+                    pet.setBirthdate(petInfo.getPetBirthdate());
+                    pet.setWeight(petInfo.getPetWeight());
+                    pet.setGender(petInfo.getPetGender());
+                    pet.setBreed(petInfo.getPetBreed());
+                    pet.setImage(petInfo.getPetImage());
+                    pet.setIsSterilized(petInfo.getPetIsSterilized());
+                    pet.setCustomer(savedCustomer);
+                    petRepo.save(pet);
+                }
+            }
+        } else if (request.getPetName() != null && !request.getPetName().isEmpty()) {
+            // Fallback for old single pet format
             com.database.petshop.entity.PetEntity pet = new com.database.petshop.entity.PetEntity();
             pet.setPetName(request.getPetName());
             pet.setPetType(request.getPetType());
             pet.setCongenitalDisease(request.getCongenitalDisease());
-
             pet.setBirthdate(request.getPetBirthdate());
             pet.setWeight(request.getPetWeight());
             pet.setGender(request.getPetGender());
             pet.setBreed(request.getPetBreed());
             pet.setImage(request.getPetImage());
             pet.setIsSterilized(request.getPetIsSterilized());
-
             pet.setCustomer(savedCustomer);
             petRepo.save(pet);
         }
