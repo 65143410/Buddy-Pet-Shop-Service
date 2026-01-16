@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,9 +29,19 @@ public class AdminService {
     private ProductRepository productRepo;
     @Autowired
     private StaffRepository staffRepo;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public List<AdminEntity> findAllAdmins() {
         return adminRepo.findAll();
+    }
+
+    public AdminEntity login(String email, String rawPassword) {
+        AdminEntity admin = adminRepo.findByEmail(email);
+        if (admin != null && passwordEncoder.matches(rawPassword, admin.getPassword())) {
+            return admin;
+        }
+        return null;
     }
 
     public AdminEntity saveAdmin(AdminEntity admin) {

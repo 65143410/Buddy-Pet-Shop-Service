@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.database.petshop.entity.StaffEntity;
@@ -15,8 +16,19 @@ public class StaffService {
     @Autowired
     private StaffRepository staffRepo;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     public List<StaffEntity> findAllStaff() {
         return staffRepo.findAll();
+    }
+
+    public StaffEntity login(String email, String rawPassword) {
+        StaffEntity staff = staffRepo.findByEmail(email);
+        if (staff != null && passwordEncoder.matches(rawPassword, staff.getPassword())) {
+            return staff;
+        }
+        return null;
     }
 
     public StaffEntity findStaffById(Long id) {
@@ -45,10 +57,10 @@ public class StaffService {
     }
 
     public void updateStatus(Long id, String newStatus) {
-        StaffEntity staff = staffRepo.findById(id) 
+        StaffEntity staff = staffRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("ไม่พบพนักงานไอดี: " + id));
 
-        staff.setStatus(newStatus); 
+        staff.setStatus(newStatus);
         staffRepo.save(staff);
     }
 }
