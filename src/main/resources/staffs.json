@@ -4,15 +4,17 @@
         "name": "พนักงานวิภา",
         "email": "staff1@petshop.com",
         "password": "123456",
-        "position": "Manager",
-        "status": "ACTIVE"
+        "position": "MANAGER",
+        "status": "ACTIVE",
+        "phone": "0812346666"
     },
     {
         "id": 2,
         "name": "พนักงานมานะ",
         "email": "staff2@petshop.com",
         "password": "123456",
-        "position": "Staff",
-        "status": "ACTIVE"
+        "position": "STAFF",
+        "status": "ACTIVE",
+        "phone": "0812345678"
     }
 ]
