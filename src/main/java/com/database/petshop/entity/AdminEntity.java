@@ -3,6 +3,7 @@ package com.database.petshop.entity;
 import java.io.Serializable;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Column;
@@ -15,6 +16,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "Admin")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class AdminEntity implements Serializable {
 
     @Id

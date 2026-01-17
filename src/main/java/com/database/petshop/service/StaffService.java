@@ -40,17 +40,17 @@ public class StaffService {
     }
 
     public StaffEntity updateStaff(Long id, StaffEntity details) {
-        Optional<StaffEntity> optional = staffRepo.findById(id);
-        if (optional.isPresent()) {
-            StaffEntity existing = optional.get();
+        return staffRepo.findById(id).map(existing -> {
             existing.setName(details.getName());
             existing.setEmail(details.getEmail());
-            existing.setPassword(details.getPassword());
+            if (details.getPassword() != null && !details.getPassword().isEmpty()) {
+                existing.setPassword(passwordEncoder.encode(details.getPassword()));
+            }
             existing.setPosition(details.getPosition());
             existing.setPhone(details.getPhone());
+            existing.setStatus(details.getStatus());
             return staffRepo.save(existing);
-        }
-        return null;
+        }).orElse(null);
     }
 
     public void deleteStaff(Long id) {

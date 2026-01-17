@@ -48,6 +48,18 @@ public class AdminService {
         return adminRepo.save(admin);
     }
 
+    public AdminEntity updateAdmin(Long id, AdminEntity details) {
+        return adminRepo.findById(id).map(existing -> {
+            existing.setName(details.getName());
+            existing.setEmail(details.getEmail());
+            existing.setPhone(details.getPhone());
+            if (details.getPassword() != null && !details.getPassword().isEmpty()) {
+                existing.setPassword(passwordEncoder.encode(details.getPassword()));
+            }
+            return adminRepo.save(existing);
+        }).orElseThrow(() -> new RuntimeException("ไม่พบผู้ดูแลระบบไอดี: " + id));
+    }
+
     public List<OrderEntity> findPendingOrders() {
         return orderRepo.findByStatus_StatusId(1L);
     }
