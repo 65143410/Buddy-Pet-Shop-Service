@@ -27,13 +27,13 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Long> {
         List<OrderEntity> findByStatus_StatusName(String statusName);
 
         @Query("SELECT SUM(o.totalAmount) FROM OrderEntity o "
-                        + "WHERE o.status.statusId = 3 "
+                        + "WHERE o.status.statusId IN (3, 4, 5) "
                         + "AND o.orderDate BETWEEN :startDate AND :endDate")
         BigDecimal sumTotalSalesByDate(@Param("startDate") LocalDate startDate,
                         @Param("endDate") LocalDate endDate);
 
         @Query("SELECT COUNT(o) FROM OrderEntity o "
-                        + "WHERE o.status.statusId = 3 "
+                        + "WHERE o.status.statusId IN (3, 4, 5) "
                         + "AND o.orderDate BETWEEN :startDate AND :endDate")
         Long countCompletedOrdersByDate(@Param("startDate") LocalDate startDate,
                         @Param("endDate") LocalDate endDate);
@@ -44,17 +44,18 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Long> {
         @Query("SELECT o FROM OrderEntity o WHERE o.status.statusName = 'ชำระเงินแล้ว'")
         List<OrderEntity> findPaidOrdersForStaff();
 
-        @Query("SELECT SUM(o.totalAmount) FROM OrderEntity o")
+        @Query("SELECT SUM(o.totalAmount) FROM OrderEntity o WHERE o.status.statusId IN (3, 4, 5)")
         Double sumTotalAmount();
 
         @Query(value = "SELECT TO_CHAR(o.Order_Date, 'YYYY-MM') AS month, SUM(o.Total_Amount) " +
                         "FROM Orders o " +
-                        "WHERE o.Status_ID = 3 " + 
+                        "WHERE o.Status_ID IN (3, 4, 5) " +
                         "GROUP BY TO_CHAR(o.Order_Date, 'YYYY-MM') " +
                         "ORDER BY month", nativeQuery = true)
         List<Object[]> findMonthlySales();
 
-        @Query(value = "SELECT TO_CHAR(o.Order_Date, 'YYYY-MM-DD') AS day, COUNT(o) " +
+        @Query(value = "SELECT TO_CHAR(o.Order_Date, 'YYYY-MM-DD') AS day, COUNT(o), " +
+                        "SUM(CASE WHEN o.Status_ID IN (3, 4, 5) THEN o.Total_Amount ELSE 0 END) " +
                         "FROM Orders o " +
                         "WHERE o.Order_Date >= CURRENT_DATE - INTERVAL '7 days' " +
                         "GROUP BY TO_CHAR(o.Order_Date, 'YYYY-MM-DD') " +
@@ -63,7 +64,7 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Long> {
 
         @Query(value = "SELECT TO_CHAR(o.Order_Date, 'YYYY-MM-DD') AS day, SUM(o.Total_Amount) " +
                         "FROM Orders o " +
-                        "WHERE o.Status_ID = 3 " + 
+                        "WHERE o.Status_ID IN (3, 4, 5) " +
                         "AND o.Order_Date >= CURRENT_DATE - INTERVAL '30 days' " +
                         "GROUP BY TO_CHAR(o.Order_Date, 'YYYY-MM-DD') " +
                         "ORDER BY day", nativeQuery = true)

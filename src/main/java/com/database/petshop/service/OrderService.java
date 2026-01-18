@@ -77,17 +77,15 @@ public class OrderService {
         order.setOrderDate(LocalDate.now());
         order.setTotalAmount(BigDecimal.ZERO);
 
-        
         if (order.getShippingAddress() == null || order.getShippingAddress().isEmpty()) {
             if (fullCustomer.getAddress() != null) {
                 order.setShippingAddress(fullCustomer.getAddress());
             }
         }
 
-        
         if (order.getStatus() == null) {
             com.database.petshop.entity.StatusEntity initialStatus = new com.database.petshop.entity.StatusEntity();
-            initialStatus.setStatusId(slipImageUrl != null ? 2L : 1L); 
+            initialStatus.setStatusId(slipImageUrl != null ? 2L : 1L);
             order.setStatus(initialStatus);
         }
 
@@ -118,7 +116,6 @@ public class OrderService {
 
         savedOrder.setTotalAmount(calculatedTotal);
 
-        
         if (slipImageUrl != null) {
             PaymentEntity payment = new PaymentEntity();
             payment.setOrder(savedOrder);
@@ -141,7 +138,6 @@ public class OrderService {
         OrderEntity order = orderRepo.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("ไม่พบออเดอร์ ID: " + orderId));
 
-        
         if (!order.getStatus().getStatusName().equals("ชำระเงินแล้ว")) {
             throw new RuntimeException("ไม่สามารถรับออเดอร์นี้ได้ เนื่องจากยังไม่ชำระเงินหรือรอตรวจสอบ");
         }
@@ -319,8 +315,8 @@ public class OrderService {
         List<Object[]> results = orderRepo.findMonthlySales();
         return results.stream().map(row -> {
             Map<String, Object> map = new HashMap<>();
-            map.put("month", row[0]); 
-            map.put("totalSales", row[1]); 
+            map.put("month", row[0]);
+            map.put("totalSales", row[1]);
             return map;
         }).collect(Collectors.toList());
     }
@@ -331,6 +327,7 @@ public class OrderService {
             Map<String, Object> map = new HashMap<>();
             map.put("date", row[0]);
             map.put("count", row[1]);
+            map.put("revenue", row[2]);
             return map;
         }).collect(Collectors.toList());
     }
