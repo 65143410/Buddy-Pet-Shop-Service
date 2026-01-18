@@ -68,12 +68,12 @@ public class CustomerService {
 
     @org.springframework.transaction.annotation.Transactional
     public CustomerEntity register(com.database.petshop.dto.RegisterRequest request) {
-        // 1. ตรวจสอบอีเมลซ้ำ
+        
         if (customerRepo.findByEmail(request.getEmail()) != null) {
             throw new RuntimeException("อีเมลนี้มีผู้ใช้งานแล้ว");
         }
 
-        // 2. สร้างลูกค้าใหม่
+        
         CustomerEntity customer = new CustomerEntity();
         customer.setCustomerName(request.getCustomerName());
         customer.setEmail(request.getEmail());
@@ -84,8 +84,7 @@ public class CustomerService {
 
         CustomerEntity savedCustomer = customerRepo.save(customer);
 
-        // 3. ถ้ามีข้อมูลสัตว์เลี้ยง ให้บันทึกด้วย
-        // 3. บันทึกข้อมูลสัตว์เลี้ยง (รองรับหลายตัว)
+        
         if (request.getPets() != null && !request.getPets().isEmpty()) {
             for (com.database.petshop.dto.RegisterRequest.PetInfo petInfo : request.getPets()) {
                 if (petInfo.getPetName() != null && !petInfo.getPetName().isEmpty()) {
@@ -104,7 +103,7 @@ public class CustomerService {
                 }
             }
         } else if (request.getPetName() != null && !request.getPetName().isEmpty()) {
-            // Fallback for old single pet format
+            
             com.database.petshop.entity.PetEntity pet = new com.database.petshop.entity.PetEntity();
             pet.setPetName(request.getPetName());
             pet.setPetType(request.getPetType());

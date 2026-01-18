@@ -50,7 +50,7 @@ public class OrderController {
     @PostMapping("/create")
     public ResponseEntity<?> createOrder(@RequestBody OrderRequestDTO request) {
         try {
-            // Create Order with Slip (Base64 string passed directly)
+            
             OrderEntity order = orderService.createOrderWithSlip(request.getOrder(), request.getDetails(),
                     request.getSlipImage());
             return ResponseEntity.ok(order);
@@ -161,7 +161,7 @@ public class OrderController {
                 .orElseThrow(() -> new RuntimeException("ไม่พบลูกค้า ID: " + id));
 
         customer.setCustomerName(details.getCustomerName());
-        // เพิ่ม field อื่นๆ ที่ต้องการให้แก้ได้ เช่น phone, email
+        
 
         return ResponseEntity.ok(customerRepo.save(customer));
     }

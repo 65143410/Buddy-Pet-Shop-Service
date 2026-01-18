@@ -50,7 +50,7 @@ public class ProductLog {
         this.timestamp = LocalDateTime.now();
     }
 
-    // Manual Getters and Setters
+    
     public Long getLogId() {
         return logId;
     }

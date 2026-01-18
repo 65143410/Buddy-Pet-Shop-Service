@@ -25,7 +25,7 @@ public class RegisterRequest {
     private String address;
     private String image;
 
-    // Support for multiple pets
+    
     private List<PetInfo> pets;
 
     @Data
@@ -41,8 +41,8 @@ public class RegisterRequest {
         private Boolean petIsSterilized;
     }
 
-    // Deprecated single pet fields (kept for backward compatibility if needed, but
-    // primary logic will check 'pets' list)
+    
+    
     private String petName;
     private String petType;
     private String congenitalDisease;

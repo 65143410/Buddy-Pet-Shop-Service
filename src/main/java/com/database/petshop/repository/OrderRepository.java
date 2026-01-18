@@ -49,7 +49,7 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Long> {
 
         @Query(value = "SELECT TO_CHAR(o.Order_Date, 'YYYY-MM') AS month, SUM(o.Total_Amount) " +
                         "FROM Orders o " +
-                        "WHERE o.Status_ID = 3 " + // Only Completed/Paid Orders
+                        "WHERE o.Status_ID = 3 " + 
                         "GROUP BY TO_CHAR(o.Order_Date, 'YYYY-MM') " +
                         "ORDER BY month", nativeQuery = true)
         List<Object[]> findMonthlySales();
@@ -63,7 +63,7 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Long> {
 
         @Query(value = "SELECT TO_CHAR(o.Order_Date, 'YYYY-MM-DD') AS day, SUM(o.Total_Amount) " +
                         "FROM Orders o " +
-                        "WHERE o.Status_ID = 3 " + // Completed orders only
+                        "WHERE o.Status_ID = 3 " + 
                         "AND o.Order_Date >= CURRENT_DATE - INTERVAL '30 days' " +
                         "GROUP BY TO_CHAR(o.Order_Date, 'YYYY-MM-DD') " +
                         "ORDER BY day", nativeQuery = true)

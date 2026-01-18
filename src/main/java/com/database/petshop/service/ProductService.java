@@ -35,22 +35,9 @@ public class ProductService {
     }
 
     public ProductEntity saveProduct(ProductEntity product) {
-        return saveProduct(product, "System"); // ส่งชื่อ "System" เข้าไปเป็น default
+        return saveProduct(product, "System"); 
     }
 
-    // public ProductEntity updateProduct(Long id, ProductEntity productDetails) {
-    // Optional<ProductEntity> optionalProduct = productRepo.findById(id);
-    // if (optionalProduct.isPresent()) {
-    // ProductEntity existingProduct = optionalProduct.get();
-    // existingProduct.setProductName(productDetails.getProductName());
-    // existingProduct.setPrice(productDetails.getPrice());
-    // existingProduct.setStock(productDetails.getStock());
-    // existingProduct.setDescription(productDetails.getDescription());
-    // existingProduct.setCategory(productDetails.getCategory());
-    // return productRepo.save(existingProduct);
-    // }
-    // return null;
-    // }
     public ProductEntity updateProduct(Long id, ProductEntity productDetails) {
         return updateProduct(id, productDetails, "System");
     }
@@ -141,7 +128,7 @@ public class ProductService {
         ProductEntity product = productRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("ไม่พบสินค้า ID: " + id));
 
-        // Soft Delete
+        
         product.setIsActive(false);
         productRepo.save(product);
 
@@ -157,25 +144,24 @@ public class ProductService {
 
         productLogRepo.save(log);
 
-        // productRepo.delete(product);
     }
 
     public List<ProductEntity> getRecommendedProducts(String petType, String disease) {
-        // 1. Get ALL Active products for this Pet Type
+        
         List<ProductEntity> allProducts = productRepo.findActiveProductsByPetType(petType);
 
         if (disease == null || disease.equalsIgnoreCase("NONE")) {
-            // If no disease, return everything (or maybe just NONE?).
-            // User said "Take both", but if pet has no disease, they naturally just want
-            // general products.
-            // But to be safe and give more options, let's just return all matching pet
-            // type.
-            // Or better: Prioritize "General" ones?
+            
+            
+            
+            
+            
+            
             return allProducts;
         }
 
-        // 2. Sort Only (No Filtering - User wants all products for the pet type, but
-        // prioritized)
+        
+        
         return allProducts.stream()
                 .sorted((p1, p2) -> {
                     String d1 = p1.getSuitableForDisease();
@@ -184,11 +170,11 @@ public class ProductService {
                     boolean p1Matches = d1 != null && d1.equalsIgnoreCase(disease);
                     boolean p2Matches = d2 != null && d2.equalsIgnoreCase(disease);
 
-                    // Priority: Match Disease > Others
+                    
                     if (p1Matches && !p2Matches)
-                        return -1; // p1 comes first
+                        return -1; 
                     if (!p1Matches && p2Matches)
-                        return 1; // p2 comes first
+                        return 1; 
                     return 0;
                 })
                 .collect(Collectors.toList());

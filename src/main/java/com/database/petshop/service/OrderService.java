@@ -64,7 +64,7 @@ public class OrderService {
 
     @Transactional
     public OrderEntity createOrderWithSlip(OrderEntity order, List<OrderDetailEntity> details, String slipImageUrl) {
-        // ... (Validation logic reused or copied) ...
+
         if (order.getCustomer() == null || order.getCustomer().getCustomerId() == null) {
             throw new RuntimeException("ไม่สามารถสร้างออเดอร์ได้: กรุณาระบุข้อมูลลูกค้า");
         }
@@ -77,17 +77,17 @@ public class OrderService {
         order.setOrderDate(LocalDate.now());
         order.setTotalAmount(BigDecimal.ZERO);
 
-        // Snapshot Shipping Address
+        
         if (order.getShippingAddress() == null || order.getShippingAddress().isEmpty()) {
             if (fullCustomer.getAddress() != null) {
                 order.setShippingAddress(fullCustomer.getAddress());
             }
         }
 
-        // Set status to "Wait for Check" (2) if slip is present
+        
         if (order.getStatus() == null) {
             com.database.petshop.entity.StatusEntity initialStatus = new com.database.petshop.entity.StatusEntity();
-            initialStatus.setStatusId(slipImageUrl != null ? 2L : 1L); // 1=Pending Payment, 2=Wait Check
+            initialStatus.setStatusId(slipImageUrl != null ? 2L : 1L); 
             order.setStatus(initialStatus);
         }
 
@@ -118,7 +118,7 @@ public class OrderService {
 
         savedOrder.setTotalAmount(calculatedTotal);
 
-        // Save Payment/Slip Logic
+        
         if (slipImageUrl != null) {
             PaymentEntity payment = new PaymentEntity();
             payment.setOrder(savedOrder);
@@ -132,8 +132,6 @@ public class OrderService {
         return orderRepo.save(savedOrder);
     }
 
-    // Keep original method for backward compatibility if needed, but it's better to
-    // refactor
     public OrderEntity createOrder(OrderEntity order, List<OrderDetailEntity> details) {
         return createOrderWithSlip(order, details, null);
     }
@@ -143,7 +141,7 @@ public class OrderService {
         OrderEntity order = orderRepo.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("ไม่พบออเดอร์ ID: " + orderId));
 
-        // Allowed to accept if Paid (3)
+        
         if (!order.getStatus().getStatusName().equals("ชำระเงินแล้ว")) {
             throw new RuntimeException("ไม่สามารถรับออเดอร์นี้ได้ เนื่องจากยังไม่ชำระเงินหรือรอตรวจสอบ");
         }
@@ -321,8 +319,8 @@ public class OrderService {
         List<Object[]> results = orderRepo.findMonthlySales();
         return results.stream().map(row -> {
             Map<String, Object> map = new HashMap<>();
-            map.put("month", row[0]); // YYYY-MM
-            map.put("totalSales", row[1]); // Sum(TotalAmount)
+            map.put("month", row[0]); 
+            map.put("totalSales", row[1]); 
             return map;
         }).collect(Collectors.toList());
     }

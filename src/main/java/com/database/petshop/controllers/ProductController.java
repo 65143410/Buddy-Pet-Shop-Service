@@ -69,7 +69,7 @@ public class ProductController {
 
     @GetMapping("/logs")
     public ResponseEntity<List<ProductLog>> getAllLogs() {
-        // แนะนำให้เรียกผ่าน Service นะครับ
+
         return ResponseEntity.ok(productService.getAllProductLogs());
     }
 

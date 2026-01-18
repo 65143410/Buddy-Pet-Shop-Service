@@ -1,7 +1,7 @@
 package com.database.petshop.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import jakarta.persistence.Table; // Fixed Import
+import jakarta.persistence.Table; 
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

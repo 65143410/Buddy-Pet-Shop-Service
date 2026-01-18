@@ -50,8 +50,8 @@ public class PetService {
         pet.setBreed(dto.getBreed());
         pet.setImage(dto.getImage());
         pet.setIsSterilized(dto.getIsSterilized());
-        // Note: Usually we don't change the owner (customer) during a simple update, so
-        // we skip that unless needed.
+        
+        
 
         return petRepo.save(pet);
     }

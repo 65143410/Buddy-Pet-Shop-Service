@@ -45,7 +45,7 @@ public class AdminController {
     @PostMapping("/confirm-order/{orderId}")
     public ResponseEntity<String> confirmOrder(@PathVariable Long orderId) {
         try {
-            adminService.confirmPaymentAndDeductStock(orderId, 1L); // 1L คือ ID แอดมินที่ login
+            adminService.confirmPaymentAndDeductStock(orderId, 1L); 
             return ResponseEntity.ok("ยืนยันการชำระเงินและตัดสต็อกสินค้าสำเร็จ");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -54,7 +54,7 @@ public class AdminController {
 
     @GetMapping("/stats")
     public ResponseEntity<List<Map<String, Object>>> getStats() {
-        // ตอนนี้ adminService จะรู้จัก getDashboardStats() แล้ว
+        
         return ResponseEntity.ok(adminService.getDashboardStats());
     }
 

@@ -24,7 +24,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @RequestMapping("/api/auth")
 @CrossOrigin(origins = "http://localhost:4200")
-@Tag(name = "Authentication", description = "ระบบจัดการการเข้าสู่ระบบ (Login)") // Swagger Group
+@Tag(name = "Authentication", description = "ระบบจัดการการเข้าสู่ระบบ (Login)") 
 public class AuthController {
 
     @Autowired
@@ -41,19 +41,19 @@ public class AuthController {
     @ApiResponse(responseCode = "401", description = "อีเมลหรือรหัสผ่านไม่ถูกต้อง")
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
-        // 1. Try Customer Login
+        
         CustomerEntity customer = customerService.login(loginRequest.getEmail(), loginRequest.getPassword());
         if (customer != null) {
             return ResponseEntity.ok(customer);
         }
 
-        // 2. Try Staff Login
+        
         StaffEntity staff = staffService.login(loginRequest.getEmail(), loginRequest.getPassword());
         if (staff != null) {
             return ResponseEntity.ok(staff);
         }
 
-        // 3. Try Admin Login
+        
         AdminEntity admin = adminService.login(loginRequest.getEmail(), loginRequest.getPassword());
         if (admin != null) {
             return ResponseEntity.ok(admin);

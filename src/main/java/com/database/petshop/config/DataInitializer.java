@@ -59,7 +59,7 @@ public class DataInitializer implements CommandLineRunner {
     private final CancelOrderRepository cancelOrderRepo;
     private final PasswordEncoder passwordEncoder;
 
-    // Maps to store entities with their JSON ID as key to resolve relationships
+    
     private Map<Long, StatusEntity> statusMap = new HashMap<>();
     private Map<Long, CategoryEntity> categoryMap = new HashMap<>();
     private Map<Long, AdminEntity> adminMap = new HashMap<>();
@@ -96,45 +96,45 @@ public class DataInitializer implements CommandLineRunner {
 
         System.out.println(">>> Initializing Data from JSON files...");
         ObjectMapper mapper = new ObjectMapper();
-        mapper.findAndRegisterModules(); // Support Java 8 Date/Time
+        mapper.findAndRegisterModules(); 
 
-        // 1. Status
+        
         loadStatus(mapper);
 
-        // 2. Category
+        
         loadCategory(mapper);
 
-        // 3. Admin
+        
         loadAdmin(mapper);
 
-        // 4. Staff
+        
         loadStaff(mapper);
 
-        // 5. Customer
+        
         loadCustomer(mapper);
 
-        // 6. Pet (depends on Customer, Category)
+        
         loadPet(mapper);
 
-        // 7. Product (depends on Category, Admin)
+        
         loadProduct(mapper);
 
-        // 8. Order (depends on Customer, Staff, Status)
+        
         loadOrder(mapper);
 
-        // 9. OrderDetail (depends on Order, Product)
+        
         loadOrderDetail(mapper);
 
-        // 10. Payment (depends on Order)
+        
         loadPayment(mapper);
 
-        // 11. CancelOrder (depends on Order, Staff)
+        
         loadCancelOrder(mapper);
 
         System.out.println("[SUCCESS] All Data Initialized Successfully.");
     }
 
-    // --- Loading Methods ---
+    
 
     private void loadStatus(ObjectMapper mapper) throws Exception {
         try (InputStream is = getClass().getResourceAsStream("/statuses.json")) {
@@ -145,8 +145,8 @@ public class DataInitializer implements CommandLineRunner {
             for (StatusJsonDTO dto : dtos) {
                 StatusEntity entity = new StatusEntity();
                 entity.setStatusName(dto.statusName);
-                // StatusEntity uses statusId, generated if new, but we might want to map for fk
-                // lookup
+                
+                
                 StatusEntity saved = statusRepo.save(entity);
                 statusMap.put(dto.id, saved);
             }
@@ -344,11 +344,8 @@ public class DataInitializer implements CommandLineRunner {
                     if (order != null && product != null) {
                         entity.setOrder(order);
                         entity.setProduct(product);
-                        // Composite Key
-                        // Assuming OrderDetailId class exists
-                        // entity.setId(new OrderDetailId(order.getOrderId(), product.getProductId()));
-                        // But wait, OrderDetailEntity uses @IdClass? Or embedded id?
-                        // Let's rely on setters if relationships are set.
+
+                        
                         orderDetailRepo.save(entity);
                     }
                 }
@@ -365,7 +362,7 @@ public class DataInitializer implements CommandLineRunner {
             List<PaymentJsonDTO> dtos = mapper.readValue(is, listType);
             for (PaymentJsonDTO dto : dtos) {
                 PaymentEntity entity = new PaymentEntity();
-                // paymentDate format: "2025-11-18T10:30:00"
+                
                 if (dto.paymentDate != null)
                     entity.setPaymentDate(LocalDateTime.parse(dto.paymentDate));
                 entity.setAmount(dto.amount);
@@ -412,7 +409,7 @@ public class DataInitializer implements CommandLineRunner {
         }
     }
 
-    // --- DTO Classes ---
+    
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     static class StatusJsonDTO {
@@ -535,7 +532,7 @@ public class DataInitializer implements CommandLineRunner {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     static class ProductRefDTO {
-        public Long productId; // Assuming products.json uses productId
+        public Long productId; 
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)

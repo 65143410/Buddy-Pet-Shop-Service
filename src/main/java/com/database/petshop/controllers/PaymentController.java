@@ -29,13 +29,10 @@ public class PaymentController {
     private com.database.petshop.repository.StatusRepository statusRepo;
 
     @PostMapping("/upload-slip")
-    
+
     public ResponseEntity<?> uploadSlip(
-            // @PathVariable Long orderId,
             @RequestBody SlipRequest request) {
         try {
-            // String fileName = fileService.saveSlip(file);
-            // String fileName = "testttBase64";
             OrderEntity order = orderRepo.findById(request.getOrderId())
                     .orElseThrow(() -> new RuntimeException("ไม่พบออเดอร์"));
 
