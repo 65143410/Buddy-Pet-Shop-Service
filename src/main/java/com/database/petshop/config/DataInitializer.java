@@ -38,6 +38,8 @@ import com.database.petshop.repository.PetRepository;
 import com.database.petshop.repository.ProductRepository;
 import com.database.petshop.repository.StaffRepository;
 import com.database.petshop.repository.StatusRepository;
+import com.database.petshop.repository.ProductLogRepository; // [NEW]
+import com.database.petshop.entity.ProductLog; // [NEW]
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -57,9 +59,9 @@ public class DataInitializer implements CommandLineRunner {
     private final OrderDetailRepository orderDetailRepo;
     private final PaymentRepository paymentRepo;
     private final CancelOrderRepository cancelOrderRepo;
+    private final ProductLogRepository productLogRepo; // [NEW]
     private final PasswordEncoder passwordEncoder;
 
-    
     private Map<Long, StatusEntity> statusMap = new HashMap<>();
     private Map<Long, CategoryEntity> categoryMap = new HashMap<>();
     private Map<Long, AdminEntity> adminMap = new HashMap<>();
@@ -71,7 +73,8 @@ public class DataInitializer implements CommandLineRunner {
     public DataInitializer(StatusRepository statusRepo, CategoryRepository categoryRepo, AdminRepository adminRepo,
             StaffRepository staffRepo, CustomerRepository customerRepo, PetRepository petRepo,
             ProductRepository productRepo, OrderRepository orderRepo, OrderDetailRepository orderDetailRepo,
-            PaymentRepository paymentRepo, CancelOrderRepository cancelOrderRepo, PasswordEncoder passwordEncoder) {
+            PaymentRepository paymentRepo, CancelOrderRepository cancelOrderRepo, ProductLogRepository productLogRepo, // [NEW]
+            PasswordEncoder passwordEncoder) {
         this.statusRepo = statusRepo;
         this.categoryRepo = categoryRepo;
         this.adminRepo = adminRepo;
@@ -83,6 +86,7 @@ public class DataInitializer implements CommandLineRunner {
         this.orderDetailRepo = orderDetailRepo;
         this.paymentRepo = paymentRepo;
         this.cancelOrderRepo = cancelOrderRepo;
+        this.productLogRepo = productLogRepo; // [NEW]
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -96,45 +100,35 @@ public class DataInitializer implements CommandLineRunner {
 
         System.out.println(">>> Initializing Data from JSON files...");
         ObjectMapper mapper = new ObjectMapper();
-        mapper.findAndRegisterModules(); 
+        mapper.findAndRegisterModules();
 
-        
         loadStatus(mapper);
 
-        
         loadCategory(mapper);
 
-        
         loadAdmin(mapper);
 
-        
         loadStaff(mapper);
 
-        
         loadCustomer(mapper);
 
-        
         loadPet(mapper);
 
-        
         loadProduct(mapper);
 
-        
         loadOrder(mapper);
 
-        
         loadOrderDetail(mapper);
 
-        
         loadPayment(mapper);
 
-        
         loadCancelOrder(mapper);
+
+        // [NEW] Load Product Logs
+        loadProductLog(mapper);
 
         System.out.println("[SUCCESS] All Data Initialized Successfully.");
     }
-
-    
 
     private void loadStatus(ObjectMapper mapper) throws Exception {
         try (InputStream is = getClass().getResourceAsStream("/statuses.json")) {
@@ -145,8 +139,7 @@ public class DataInitializer implements CommandLineRunner {
             for (StatusJsonDTO dto : dtos) {
                 StatusEntity entity = new StatusEntity();
                 entity.setStatusName(dto.statusName);
-                
-                
+
                 StatusEntity saved = statusRepo.save(entity);
                 statusMap.put(dto.id, saved);
             }
@@ -345,7 +338,6 @@ public class DataInitializer implements CommandLineRunner {
                         entity.setOrder(order);
                         entity.setProduct(product);
 
-                        
                         orderDetailRepo.save(entity);
                     }
                 }
@@ -362,7 +354,7 @@ public class DataInitializer implements CommandLineRunner {
             List<PaymentJsonDTO> dtos = mapper.readValue(is, listType);
             for (PaymentJsonDTO dto : dtos) {
                 PaymentEntity entity = new PaymentEntity();
-                
+
                 if (dto.paymentDate != null)
                     entity.setPaymentDate(LocalDateTime.parse(dto.paymentDate));
                 entity.setAmount(dto.amount);
@@ -409,7 +401,36 @@ public class DataInitializer implements CommandLineRunner {
         }
     }
 
-    
+    // [NEW] Load Product Logs
+    private void loadProductLog(ObjectMapper mapper) throws Exception {
+        try (InputStream is = getClass().getResourceAsStream("/ProductLog.json")) {
+            if (is == null)
+                return;
+            CollectionType listType = mapper.getTypeFactory().constructCollectionType(List.class,
+                    ProductLogJsonDTO.class);
+            List<ProductLogJsonDTO> dtos = mapper.readValue(is, listType);
+            for (ProductLogJsonDTO dto : dtos) {
+                ProductLog entity = new ProductLog();
+                // Map fields from JSON DTO to Entity
+                entity.setProductId(dto.productId);
+                entity.setProductName(dto.productName);
+                entity.setAction(dto.action);
+                entity.setQuantityChange(dto.quantityChange);
+                entity.setFinalStock(dto.finalStock);
+                entity.setStaffName(dto.staffName);
+                entity.setStaffId(dto.staffId);
+                entity.setAdminId(dto.adminId);
+                entity.setNotes(dto.notes);
+
+                if (dto.timestamp != null) {
+                    entity.setTimestamp(LocalDateTime.parse(dto.timestamp));
+                }
+
+                productLogRepo.save(entity);
+            }
+            System.out.println(">>> Loaded " + dtos.size() + " product logs.");
+        }
+    }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     static class StatusJsonDTO {
@@ -532,7 +553,7 @@ public class DataInitializer implements CommandLineRunner {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     static class ProductRefDTO {
-        public Long productId; 
+        public Long productId;
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -552,5 +573,21 @@ public class DataInitializer implements CommandLineRunner {
         public String reason;
         public OrderRefDTO order;
         public StaffRefDTO staff;
+    }
+
+    // [NEW] ProductLogJsonDTO
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    static class ProductLogJsonDTO {
+        public Long logId;
+        public Long productId;
+        public String productName;
+        public String action;
+        public Integer quantityChange;
+        public Integer finalStock;
+        public String staffName;
+        public Long staffId;
+        public Long adminId;
+        public String timestamp;
+        public String notes;
     }
 }
