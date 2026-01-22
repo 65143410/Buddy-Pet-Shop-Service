@@ -217,6 +217,7 @@ public class DataInitializer implements CommandLineRunner {
                 entity.setCustomerName(dto.customerName);
                 entity.setEmail(dto.email);
                 entity.setPhone(dto.phone);
+                entity.setImage(dto.image);
                 entity.setAddress(dto.address);
                 entity.setPassword(passwordEncoder.encode(dto.password));
                 entity.setStatus(dto.status);
