@@ -10,8 +10,10 @@ import com.database.petshop.repository.OrderRepository;
 import com.database.petshop.repository.ProductRepository;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional; 
+import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -34,7 +36,7 @@ public class PetShopService {
         this.customerRepository = customerRepository;
     }
 
-    @Transactional 
+    @Transactional
     public OrderEntity createNewOrder(Long customerId, List<Long> productIds, List<Integer> quantities) {
 
         CustomerEntity customer = customerRepository.findById(customerId)
@@ -42,7 +44,7 @@ public class PetShopService {
 
         OrderEntity newOrder = new OrderEntity();
         newOrder.setCustomer(customer);
-        newOrder.setOrderDate(LocalDate.now());
+        newOrder.setOrderDate(Timestamp.from(Instant.now()));
 
         BigDecimal totalAmount = BigDecimal.ZERO;
 
@@ -58,20 +60,20 @@ public class PetShopService {
             }
 
             product.setStock(product.getStock() - quantity);
-            productRepository.save(product); 
+            productRepository.save(product);
 
             OrderDetailEntity orderDetail = new OrderDetailEntity();
-        
+
             orderDetail.setOrder(newOrder);
             orderDetail.setProduct(product);
             orderDetail.setQuantity(quantity);
-            orderDetail.setUnitPrice(product.getPrice()); 
+            orderDetail.setUnitPrice(product.getPrice());
             totalAmount = totalAmount.add(product.getPrice().multiply(new BigDecimal(quantity)));
             newOrder.getOrderDetails().add(orderDetail);
         }
 
         newOrder.setTotalAmount(totalAmount);
-        
+
         return orderRepository.save(newOrder);
     }
 }

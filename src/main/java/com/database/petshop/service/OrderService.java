@@ -1,6 +1,8 @@
 package com.database.petshop.service;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -74,7 +76,7 @@ public class OrderService {
                         () -> new RuntimeException("ไม่พบข้อมูลลูกค้า ID: " + order.getCustomer().getCustomerId()));
         order.setCustomer(fullCustomer);
 
-        order.setOrderDate(LocalDate.now());
+        order.setOrderDate(Timestamp.from(Instant.now()));
         order.setTotalAmount(BigDecimal.ZERO);
 
         if (order.getShippingAddress() == null || order.getShippingAddress().isEmpty()) {
@@ -173,11 +175,9 @@ public class OrderService {
     public OrderEntity completeOrder(Long orderId) {
         OrderEntity order = orderRepo.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("ไม่พบออเดอร์ ID: " + orderId));
-
         com.database.petshop.entity.StatusEntity completedStatus = new com.database.petshop.entity.StatusEntity();
-        completedStatus.setStatusId(3L);
+        completedStatus.setStatusId(5L);
         order.setStatus(completedStatus);
-
         return orderRepo.save(order);
     }
 
@@ -193,7 +193,7 @@ public class OrderService {
         }
 
         com.database.petshop.entity.StatusEntity cancelledStatus = new com.database.petshop.entity.StatusEntity();
-        cancelledStatus.setStatusId(4L);
+        cancelledStatus.setStatusId(6L);
         order.setStatus(cancelledStatus);
 
         return orderRepo.save(order);

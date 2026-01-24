@@ -2,6 +2,8 @@ package com.database.petshop.entity;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +29,7 @@ public class OrderEntity implements Serializable {
     private Long orderId;
 
     @Column(name = "Order_Date", nullable = false)
-    private LocalDate orderDate = LocalDate.now();
+    private Timestamp orderDate = Timestamp.from(Instant.now());
 
     @Column(name = "Total_Amount", nullable = false)
     private BigDecimal totalAmount;
@@ -61,11 +63,11 @@ public class OrderEntity implements Serializable {
         this.customer = customer;
     }
 
-    public LocalDate getOrderDate() {
+    public Timestamp getOrderDate() {
         return orderDate;
     }
 
-    public void setOrderDate(LocalDate orderDate) {
+    public void setOrderDate(Timestamp orderDate) {
         this.orderDate = orderDate;
     }
 
