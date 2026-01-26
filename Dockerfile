@@ -1,13 +1,18 @@
-# ใช้ Image พื้นฐานเป็น Java 17 (หรือเวอร์ชันที่คุณใช้)
-FROM openjdk:21-jdk-slim
+# ใช้ Base Image เป็น Java 21 ตามที่ระบุใน pom.xml
+FROM eclipse-temurin:21-jdk-jammy
 
-# ก็อปปี้ไฟล์โปรเจกต์เข้าไปใน Container
-COPY . /app
+# ตั้งค่า Working Directory
 WORKDIR /app
 
-# สั่ง Build ด้วย Maven Wrapper
+# ก็อปปี้ไฟล์ทั้งหมดในโปรเจกต์เข้าไปใน Docker
+COPY . .
+
+# ให้สิทธิ์ไฟล์ mvnw สามารถรันได้ (กันเหนียวสำหรับคนใช้ Windows)
+RUN chmod +x mvnw
+
+# สั่ง Build โปรเจกต์ (ข้าม Test เพื่อความเร็ว)
 RUN ./mvnw clean package -DskipTests
 
-# บอกว่าให้รันไฟล์ .jar ที่ได้จากการ Build
+# คำสั่งรันเมื่อ Deploy เสร็จ
+# ชื่อไฟล์ต้องตรงกับ artifactId และ version ใน pom.xml
 ENTRYPOINT ["java", "-jar", "target/petshop-0.0.1-SNAPSHOT.jar"]
-# *หมายเหตุ: ต้องแก้ชื่อไฟล์ jar ให้ตรงกับที่ระบุใน pom.xml (ตรง <artifactId> และ <version>)
