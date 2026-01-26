@@ -49,6 +49,7 @@ public class StaffService {
             existing.setPosition(details.getPosition());
             existing.setPhone(details.getPhone());
             existing.setStatus(details.getStatus());
+            existing.setImage(details.getImage());
             return staffRepo.save(existing);
         }).orElse(null);
     }

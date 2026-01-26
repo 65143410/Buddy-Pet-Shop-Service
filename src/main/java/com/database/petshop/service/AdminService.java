@@ -53,6 +53,7 @@ public class AdminService {
             existing.setName(details.getName());
             existing.setEmail(details.getEmail());
             existing.setPhone(details.getPhone());
+            existing.setImage(details.getImage());
             if (details.getPassword() != null && !details.getPassword().isEmpty()) {
                 existing.setPassword(passwordEncoder.encode(details.getPassword()));
             }

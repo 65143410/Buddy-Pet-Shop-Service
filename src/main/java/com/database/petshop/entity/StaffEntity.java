@@ -49,6 +49,9 @@ public class StaffEntity implements Serializable {
     @Column(name = "Phone")
     private String phone;
 
+    @Column(name = "Image", columnDefinition = "TEXT")
+    private String image;
+
     public Long getStaffId() {
         return staffId;
     }
@@ -111,6 +114,14 @@ public class StaffEntity implements Serializable {
 
     public void setPosition(String position) {
         this.position = position;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
 }

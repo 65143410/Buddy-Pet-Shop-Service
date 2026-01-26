@@ -40,6 +40,9 @@ public class AdminEntity implements Serializable {
     @Column(name = "Phone")
     private String phone;
 
+    @Column(name = "Image", columnDefinition = "TEXT")
+    private String image;
+
     public Long getAdminId() {
         return adminId;
     }
@@ -86,6 +89,14 @@ public class AdminEntity implements Serializable {
 
     public void setProducts(List<ProductEntity> products) {
         this.products = products;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
 }
