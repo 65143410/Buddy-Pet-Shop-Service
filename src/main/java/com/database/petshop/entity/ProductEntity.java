@@ -21,6 +21,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "Product")
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class ProductEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
