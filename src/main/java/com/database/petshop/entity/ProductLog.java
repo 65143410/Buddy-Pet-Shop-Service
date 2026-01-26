@@ -2,6 +2,8 @@ package com.database.petshop.entity;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -14,6 +16,7 @@ import lombok.Data;
 @Entity
 @Table(name = "product_logs")
 @Data
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class ProductLog {
 
     @Id
@@ -50,7 +53,6 @@ public class ProductLog {
         this.timestamp = LocalDateTime.now();
     }
 
-    
     public Long getLogId() {
         return logId;
     }

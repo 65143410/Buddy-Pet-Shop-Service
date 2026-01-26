@@ -1,7 +1,9 @@
 package com.database.petshop.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import jakarta.persistence.Table; 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import jakarta.persistence.Table;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,6 +16,7 @@ import jakarta.persistence.ManyToOne;
 
 @Entity
 @Table(name = "Pet")
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class PetEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

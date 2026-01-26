@@ -39,14 +39,17 @@ public class OrderEntity implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "Customer_ID", nullable = false)
+    @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
     private CustomerEntity customer;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "Staff_ID")
+    @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
     private StaffEntity staff;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "Status_ID", nullable = false)
+    @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
     private StatusEntity status;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)

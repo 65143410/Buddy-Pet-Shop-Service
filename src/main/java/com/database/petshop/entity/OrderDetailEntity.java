@@ -32,6 +32,7 @@ public class OrderDetailEntity implements Serializable {
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "Product_ID")
+    @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
     private ProductEntity product;
 
     @Min(value = 1, message = "จำนวนสินค้าต้องมีอย่างน้อย 1 ชิ้น")

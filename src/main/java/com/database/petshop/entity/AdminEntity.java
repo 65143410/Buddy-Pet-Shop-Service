@@ -16,7 +16,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "Admin")
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class AdminEntity implements Serializable {
 
     @Id

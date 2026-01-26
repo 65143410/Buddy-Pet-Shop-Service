@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -18,6 +19,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "CancelOrder")
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class CancelOrderEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,7 +33,7 @@ public class CancelOrderEntity implements Serializable {
     private String reason;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "Order_ID", nullable = false, unique = true) 
+    @JoinColumn(name = "Order_ID", nullable = false, unique = true)
     private OrderEntity order;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -79,5 +81,4 @@ public class CancelOrderEntity implements Serializable {
         this.staff = staff;
     }
 
-    
 }
